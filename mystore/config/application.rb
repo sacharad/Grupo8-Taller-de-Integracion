@@ -8,6 +8,10 @@ Bundler.require(*Rails.groups)
 
 module Mystore
   class Application < Rails::Application
+
+    config.i18n.enforce_available_locales = true
+    # or if one of your gem compete for pre-loading, use
+    I18n.config.enforce_available_locales = true
     
     config.to_prepare do
       # Load application's model / class decorators
@@ -19,8 +23,9 @@ module Mystore
       Dir.glob(File.join(File.dirname(__FILE__), "../app/overrides/*.rb")) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
+      
     end
-
+    
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
