@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @price.type %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @price.price %>
+</p>
+
+<p>
+  <strong>Update date:</strong>
+  <%= @price.update_date %>
+</p>
+
+<p>
+  <strong>Validity date:</strong>
+  <%= @price.validity_date %>
+</p>
+
+<p>
+  <strong>Disposition expense:</strong>
+  <%= @price.disposition_expense %>
+</p>
+
+<p>
+  <strong>Transfer charge:</strong>
+  <%= @price.transfer_charge %>
+</p>
+
+<%= link_to 'Edit', edit_price_path(@price) %> |
+<%= link_to 'Back', prices_path %>

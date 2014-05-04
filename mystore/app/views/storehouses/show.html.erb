@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Capacity:</strong>
+  <%= @storehouse.capacity %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @storehouse.type %>
+</p>
+
+<%= link_to 'Edit', edit_storehouse_path(@storehouse) %> |
+<%= link_to 'Back', storehouses_path %>
