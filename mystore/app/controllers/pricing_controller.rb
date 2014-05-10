@@ -59,6 +59,19 @@ class PricingController < ApplicationController
 
 	end
 
+	def read_file_dbprecios
+
+		@database = Mdb.open('DBPrecios.accdb')
+		@pricing = @database.read("Pricing")
+
+		# list tables in the database
+		#database.tables 
+
+		# read the records in a table
+		#database[:Movies]
+
+	end
+
 
 end
 
