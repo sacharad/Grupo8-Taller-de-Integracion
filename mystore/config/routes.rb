@@ -7,6 +7,22 @@ Mystore::Application.routes.draw do
   get '/pricing/authorize'   => 'pricing#authorize' , :method => :get , :as => :pricing_auth
   get '/pricing/callback' => 'pricing#callback' , :method => :get , :as =>  :pricing_callback
   get '/pricing/read_prices'   => 'pricing#read_prices' , :method => :get , :as => :read_prices
+
+  resources :storehouses
+
+  resources :prices
+
+  resources :reserves
+
+  resources :orders
+
+  resources :clients
+
+  resources :products
+
+  match '/api_test', to: 'api_test#index', via: 'get'
+
+
   # This line mounts Spree's routes at the root of your application.
   # This means, any requests to URLs such as /products, will go to Spree::ProductsController.
   # If you would like to change where this engine is mounted, simply change the :at option to something different.

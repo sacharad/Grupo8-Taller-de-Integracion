@@ -50,7 +50,11 @@ gem 'spree', '2.2.1'
 gem 'spree_gateway', :git => 'https://github.com/spree/spree_gateway.git', :branch => '2-2-stable'
 gem 'spree_auth_devise', :git => 'https://github.com/spree/spree_auth_devise.git', :branch => '2-2-stable'
 
+gem "httparty"
+gem 'rest-client', '~> 1.6.7'
+
 #Dropbox gem
 # http://sreeharikmarar.blogspot.com/2013/07/ruby-on-rails-practice-some-safe.html
 #http://webprogramming29.wordpress.com/2012/12/21/authorization-with-dropbox-in-ruby-on-rails-using-dropbox-sdk/
 gem 'dropbox-sdk'
+

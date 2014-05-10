@@ -11,7 +11,76 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140411151794) do
+ActiveRecord::Schema.define(version: 20140503194300) do
+
+  create_table "clients", force: true do |t|
+    t.string   "phone_number"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "code"
+    t.string   "dispatch_address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "order_products", force: true do |t|
+    t.integer  "amount"
+    t.string   "unit"
+    t.integer  "order_id"
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "orders", force: true do |t|
+    t.date     "delivery_date"
+    t.datetime "order_date"
+    t.integer  "client_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "prices", force: true do |t|
+    t.string   "type"
+    t.integer  "price"
+    t.date     "update_date"
+    t.date     "validity_date"
+    t.integer  "disposition_expense"
+    t.integer  "transfer_charge"
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "products", force: true do |t|
+    t.integer  "expense"
+    t.string   "sku"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+    t.text     "description"
+    t.string   "brand"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "products_storehouses", force: true do |t|
+    t.integer  "product_id"
+    t.integer  "storehouse_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "reserves", force: true do |t|
+    t.string   "unit"
+    t.integer  "amount"
+    t.date     "date"
+    t.integer  "client_id"
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "spree_addresses", force: true do |t|
     t.string   "firstname"
@@ -751,6 +820,13 @@ ActiveRecord::Schema.define(version: 20140411151794) do
     t.string   "description"
     t.boolean  "default_tax",        default: false
     t.integer  "zone_members_count", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "storehouses", force: true do |t|
+    t.integer  "capacity"
+    t.integer  "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

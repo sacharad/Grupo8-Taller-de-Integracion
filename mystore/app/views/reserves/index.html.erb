@@ -1,0 +1,31 @@
+<h1>Listing reserves</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Unit</th>
+      <th>Amount</th>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @reserves.each do |reserf| %>
+      <tr>
+        <td><%= reserf.unit %></td>
+        <td><%= reserf.amount %></td>
+        <td><%= reserf.date %></td>
+        <td><%= link_to 'Show', reserf %></td>
+        <td><%= link_to 'Edit', edit_reserf_path(reserf) %></td>
+        <td><%= link_to 'Destroy', reserf, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Reserve', new_reserf_path %>
