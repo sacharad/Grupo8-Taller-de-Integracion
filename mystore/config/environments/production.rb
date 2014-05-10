@@ -77,4 +77,7 @@ Mystore::Application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
+
+  ENV["WAREHOUSE_ADDRESS"] = "http://bodega-integracion-2014.herokuapp.com"
+  ENV["WAREHOUSE_PRIVATE_KEY"] = "1PIohML3"
 end
