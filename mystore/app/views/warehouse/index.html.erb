@@ -1,0 +1,33 @@
+<div class="row">
+  <h1>Bodega</h1>
+</div>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Almacen ID</th>
+        <th>Pulmon</th>
+        <th>Despacho</th>
+        <th>Recepcion</th>
+        <th>TotalSpace</th>
+        <th>UsedSpace</th>
+        <th>Almacen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @almacenes.each do |almacen|%>
+        <tr>
+          <td><%= almacen["_id"] %></td>
+          <td><%= almacen["pulmon"] %></td>
+          <td><%= almacen["despacho"] %></td>
+          <td><%= almacen["recepcion"] %></td>
+          <td><%= almacen["totalSpace"] %></td>
+          <td><%= almacen["usedSpace"] %></td>
+          <td><a class="btn btn-default" href="<%= almacen_path(almacen["_id"]) %>">Ver almacen</a></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  </div>
+</div>
