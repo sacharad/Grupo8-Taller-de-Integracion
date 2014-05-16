@@ -2,19 +2,19 @@ Mystore::Application.routes.draw do
 
   
 
-  mount Spree::Core::Engine, :at => '/'
+  mount Spree::Core::Engine, :at => '/ecommerce'
+
   match '/api_test', to: 'api_test#index', via: 'get'
-  scope :path => "/admin" do
-    resources :storehouses
-    resources :prices
-    resources :reserves
-    resources :orders
-    resources :clients
-    resources :products
-    get '/bodega/almacenes', to: 'warehouse#index', as:'bodega'
-    get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
-    get '/bodega/almacenes/:almacen_id/:sku_id', to: 'warehouse#sku', as:'sku'
-  end
+  root :to => 'home#index' 
+  resources :storehouses
+  resources :prices
+  resources :reserves
+  resources :orders
+  resources :clients
+  resources :products
+  get '/bodega/almacenes', to: 'warehouse#index', as:'bodega'
+  get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
+  get '/bodega/almacenes/:almacen_id/:sku_id', to: 'warehouse#sku', as:'sku'
 
   # This line mounts Spree's routes at the root of your application.
   # This means, any requests to URLs such as /products, will go to Spree::ProductsController.
