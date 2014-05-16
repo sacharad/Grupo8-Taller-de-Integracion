@@ -2,7 +2,7 @@ class Connectors::WarehouseConnector
   class InvalidConfigurationException < Exception
   end
 
-  def initialize
+  def initialize()
     @server_address = ENV["WAREHOUSE_ADDRESS"]
     @conn = Faraday.new(:url => @server_address) do |faraday|
       faraday.request :json
@@ -97,8 +97,8 @@ class Connectors::WarehouseConnector
       :headers => generate_security_header("delete", [productoId,direccion,precio,pedidoId]),
       :params => {
         :almacenId => almacenId,
-        :productoId => productoId
-        :precio => precio
+        :productoId => productoId,
+        :precio => precio,
         :pedidoId => pedidoId
       }
     }
