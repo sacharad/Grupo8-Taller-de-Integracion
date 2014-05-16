@@ -16,6 +16,7 @@ Mystore::Application.routes.draw do
   get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
   get '/bodega/almacenes/:almacen_id/:sku_id', to: 'warehouse#sku', as:'sku'
 
+
   # This line mounts Spree's routes at the root of your application.
   # This means, any requests to URLs such as /products, will go to Spree::ProductsController.
   # If you would like to change where this engine is mounted, simply change the :at option to something different.

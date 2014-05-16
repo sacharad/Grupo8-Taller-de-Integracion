@@ -1,6 +1,6 @@
 require 'uri'
 
-class VtigerConnector
+class Connectors::VtigerConnector
 
   def initialize
     access_key = '9Q7SnRuMMZz6ZVP2'
