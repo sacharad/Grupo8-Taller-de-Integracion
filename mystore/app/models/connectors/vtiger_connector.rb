@@ -10,7 +10,7 @@ class Connectors::VtigerConnector
     token = challenge["result"]["token"]
 
     response = RestClient.post( @url , { 
-      'operation'=>'login', 
+      'operation'=> 'login', 
       'username' => 'grupo8', 
       'accessKey' => Digest::MD5.hexdigest("#{token}#{access_key}")   
     })
@@ -18,8 +18,12 @@ class Connectors::VtigerConnector
     @session_id = JSON.parse(response)["result"]["sessionName"]
   end
 
-  def get_address(client_cf_705)
-    query = URI.encode("SELECT bill_street, bill_city, bill_state FROM Accounts WHERE cf_705 = '#{client_cf_705}';")
+  def getAddress(direccion_id)
+    query = URI.encode("SELECT bill_street, bill_city, bill_state FROM Contacts WHERE cf_707 = '#{direccion_id}';")
     address = RestClient.get("#{@url}operation=query&sessionName=#{@session_id}&query=#{query}")
+  end
+
+  def checkClient(direccion_id, rut_cliente)
+    return true
   end
 end

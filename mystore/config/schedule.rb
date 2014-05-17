@@ -12,6 +12,10 @@ every 1.minute do
 	runner "Reserve.log" 
 end
 
+# every 10.minutes do
+# 	runner "OrdersManager.fetchOrders" 
+# end
+
 # Example:
 #
 # set :output, "/path/to/my/cron_log.log"
