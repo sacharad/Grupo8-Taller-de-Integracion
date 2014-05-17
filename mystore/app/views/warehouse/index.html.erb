@@ -19,7 +19,7 @@
       <% @almacenes.each do |almacen|%>
         <tr>
           <td><%= almacen["_id"] %></td>
-          <td><%= almacen["pulmon"] %></td>
+          <td><%= almacen["pulmon"].class %></td>
           <td><%= almacen["despacho"] %></td>
           <td><%= almacen["recepcion"] %></td>
           <td><%= almacen["totalSpace"] %></td>
