@@ -38,7 +38,7 @@ class Connectors::WarehouseConnector
   end
 
   def pedirOtraBodega(sku,cantidad)
-
+    
   end
 
   #---------------------------HTTP Type Methods ----------------------------------------------
