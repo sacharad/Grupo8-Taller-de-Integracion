@@ -16,6 +16,11 @@ Mystore::Application.routes.draw do
   get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
   get '/bodega/almacenes/:almacen_id/:sku_id', to: 'warehouse#sku', as:'sku'
 
+  scope :path => "/api" do
+    get "/" => 'api#index' 
+    match "/pedirProducto" => "api#pedir_producto", via: [:post]
+  end
+
 
   # This line mounts Spree's routes at the root of your application.
   # This means, any requests to URLs such as /products, will go to Spree::ProductsController.

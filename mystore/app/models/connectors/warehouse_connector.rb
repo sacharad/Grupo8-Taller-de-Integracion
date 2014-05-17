@@ -25,8 +25,7 @@ class Connectors::WarehouseConnector
             if product["despachado"] == false
               sku_stock += 1
             end
-          end          
-        else
+          end  
         end
       end
     end
@@ -34,7 +33,7 @@ class Connectors::WarehouseConnector
   end
   
   def realizarDespacho(sku_id, cantidad) 
-
+    
   end
 
   #---------------------------HTTP Type Methods ----------------------------------------------
