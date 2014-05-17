@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 20140516141652) do
     t.string   "brand"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "model"
   end
 
   create_table "products_storehouses", force: true do |t|

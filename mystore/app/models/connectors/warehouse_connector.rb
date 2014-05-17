@@ -11,7 +11,34 @@ class Connectors::WarehouseConnector
       faraday.adapter  Faraday.default_adapter  
     end
   end
-  #---------------------------HTTP Call Type Methods ----------------------------------------------
+  #-------------------------- External Call Methods (Pedidos) --------------------------------
+
+  def obtenerStock(sku_id)
+    sku_stock = 0
+    almacenes = getAlmacenes()
+    almacenes.each do |almacen|
+      if almacen["pulmon"] == true or (almacen["pulmon"]  == false and almacen["despacho"]  == false and almacen["recepcion"] == false )
+        skus_with_stock = getSkusWithStock(almacen["_id"])
+        if !skus_with_stock.nil? and  !skus_with_stock.empty? and !skus_with_stock.find { |h| h['_id'].to_s == sku_id.to_s }.nil?
+          sku_products = getStock(almacen["_id"], sku_id)
+          sku_products.each do |product|
+            if product["despachado"] == false
+              sku_stock += 1
+            end
+          end          
+        else
+        end
+      end
+    end
+    sku_stock
+  end
+  
+  def realizarDespacho(sku_id, cantidad) 
+
+  end
+
+  #---------------------------HTTP Type Methods ----------------------------------------------
+
   def get(options={})
     Rails.logger.info "Attempting to GET to #{@server_address}#{options[:path]}"
     response = @conn.get do |req|                           
@@ -21,6 +48,7 @@ class Connectors::WarehouseConnector
     end
     JSON.parse response.body.to_json if response.status < 300
   end
+
   def post(options={})
     Rails.logger.info "Attempting to POST to #{@server_address}#{path}"
     response = @conn.post do |req|
@@ -30,6 +58,7 @@ class Connectors::WarehouseConnector
       end
       JSON.parse response.body.to_json if response.status < 300
   end
+
   def delete(options={})
     Rails.logger.info "Attempting to DELETE to #{@server_address}#{path}"
     response = @conn.delete do |req|
@@ -40,6 +69,7 @@ class Connectors::WarehouseConnector
       JSON.parse response.body.to_json if response.status < 300
   end
   #-----------------------------Api Call Options Methods---------------------------------------------------
+
   def getAlmacenes()
     options = {
       :path => "/almacenes",
@@ -47,6 +77,7 @@ class Connectors::WarehouseConnector
     }
     get options
   end
+
   def getSkusWithStock(almacenId)
     options = {
       :path => "/skusWithStock",
@@ -69,6 +100,7 @@ class Connectors::WarehouseConnector
     }
     get options
   end
+  private
   def moverStock(productoId, almacenId) #almacen de destino, mueve stock de un almacen a otro
     options = {
       :path => "/moveStock",
@@ -80,6 +112,7 @@ class Connectors::WarehouseConnector
     }
     post options
   end
+  private
   def moverStockBodega(productoId, almacenId) #almacen de destino, mueve stock de una bodega a almacen de otra
     options = {
       :path => "/moveStockBodega",
@@ -91,7 +124,8 @@ class Connectors::WarehouseConnector
     }
     post options
   end
-  def despacharStock(productoId, direccion, precio, pedidoId) #almacen de destino, mueve stock de una bodega a almacen de otra
+  private
+  def despacharStock(productoId, direccion, precio, pedidoId) #despacha los pedidos desde el sistema de despachos.
     options = {
       :path => "/stock",
       :headers => generate_security_header("delete", [productoId,direccion,precio,pedidoId]),
@@ -105,6 +139,7 @@ class Connectors::WarehouseConnector
     delete options
   end
   #----------------------------Helper Methods------------------------------------------------------------------------
+  private
   def generate_security_header(http_method, params={})
     require 'digest/hmac'
     header = http_method.to_s.upcase
