@@ -61,5 +61,4 @@ gem 'mdb'
 
 #To mongo database
 gem 'mongo'
-
 gem 'bson_ext'
