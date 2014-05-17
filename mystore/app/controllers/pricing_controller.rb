@@ -1,5 +1,6 @@
 class PricingController < ApplicationController
 	require 'dropbox_sdk'
+	require 'mdb'
 	
 	#Connection with Dropbox
 	#http://webprogramming29.wordpress.com/2012/12/21/authorization-with-dropbox-in-ruby-on-rails-using-dropbox-sdk/

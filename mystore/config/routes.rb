@@ -3,6 +3,7 @@ Mystore::Application.routes.draw do
   get "services/new"
   get "services/show" 
   get "pricing/read_file_dbprecios"
+  get "prices/precios_db"
 
     #Dropbox Routes
   get '/pricing/authorize'   => 'pricing#authorize' , :method => :get , :as => :pricing_auth

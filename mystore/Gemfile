@@ -58,3 +58,8 @@ gem 'dropbox-sdk'
 
 #To read microsoft access
 gem 'mdb'
+
+#To mongo database
+gem 'mongo'
+
+gem 'bson_ext'
