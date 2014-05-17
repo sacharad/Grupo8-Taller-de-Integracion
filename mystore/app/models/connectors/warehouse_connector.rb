@@ -17,7 +17,8 @@ class Connectors::WarehouseConnector
     sku_stock = 0
     almacenes = getAlmacenes()
     almacenes.each do |almacen|
-      if almacen["pulmon"] == true or (almacen["pulmon"]  == false and almacen["despacho"]  == false and almacen["recepcion"] == false )
+      #-----Solo se toma el stock que se encuentra en el almacen principal como stock disponible
+      if almacen["pulmon"]  == false and almacen["despacho"]  == false and almacen["recepcion"] == false
         skus_with_stock = getSkusWithStock(almacen["_id"])
         if !skus_with_stock.nil? and  !skus_with_stock.empty? and !skus_with_stock.find { |h| h['_id'].to_s == sku_id.to_s }.nil?
           sku_products = getStock(almacen["_id"], sku_id)
@@ -33,7 +34,11 @@ class Connectors::WarehouseConnector
   end
   
   def realizarDespacho(sku_id, cantidad) 
-    
+
+  end
+
+  def pedirOtraBodega(sku,cantidad)
+
   end
 
   #---------------------------HTTP Type Methods ----------------------------------------------
@@ -45,28 +50,41 @@ class Connectors::WarehouseConnector
         req.params = options[:params] unless options[:params].nil?
         req.headers["Authorization"] = options[:headers] unless options[:headers].nil?
     end
-    JSON.parse response.body.to_json if response.status < 300
+    if response.status < 300
+      return JSON.parse response.body.to_json 
+    else
+      Rails.logger.info "GET FAILED: "+response.body.to_s
+      return nil
+    end
   end
 
   def post(options={})
-    Rails.logger.info "Attempting to POST to #{@server_address}#{path}"
+    Rails.logger.info "Attempting to POST to #{@server_address}#{:path}"
     response = @conn.post do |req|
         req.url options[:path]
         req.body = options[:body].to_json unless options[:body].nil?
         req.headers["Authorization"] = options[:headers] unless options[:headers].nil?
       end
-      JSON.parse response.body.to_json if response.status < 300
-  end
+    if response.status < 300
+      return JSON.parse response.body.to_json 
+    else
+      Rails.logger.info "POST FAILED: "+response.body.to_s
+      return nil
+    end  end
 
   def delete(options={})
-    Rails.logger.info "Attempting to DELETE to #{@server_address}#{path}"
+    Rails.logger.info "Attempting to DELETE to #{@server_address}#{:path}"
     response = @conn.delete do |req|
         req.url options[:path]
         req.body = options[:body].to_json unless options[:body].nil?
         req.headers["Authorization"] = options[:headers] unless options[:headers].nil?
       end
-      JSON.parse response.body.to_json if response.status < 300
-  end
+    if response.status < 300
+      return JSON.parse response.body.to_json 
+    else
+      Rails.logger.info "DELETE FAILED: "+response.body.to_s
+      return nil
+    end  end
   #-----------------------------Api Call Options Methods---------------------------------------------------
 
   def getAlmacenes()
@@ -99,7 +117,6 @@ class Connectors::WarehouseConnector
     }
     get options
   end
-  private
   def moverStock(productoId, almacenId) #almacen de destino, mueve stock de un almacen a otro
     options = {
       :path => "/moveStock",
@@ -111,7 +128,6 @@ class Connectors::WarehouseConnector
     }
     post options
   end
-  private
   def moverStockBodega(productoId, almacenId) #almacen de destino, mueve stock de una bodega a almacen de otra
     options = {
       :path => "/moveStockBodega",
@@ -123,7 +139,6 @@ class Connectors::WarehouseConnector
     }
     post options
   end
-  private
   def despacharStock(productoId, direccion, precio, pedidoId) #despacha los pedidos desde el sistema de despachos.
     options = {
       :path => "/stock",
@@ -138,7 +153,6 @@ class Connectors::WarehouseConnector
     delete options
   end
   #----------------------------Helper Methods------------------------------------------------------------------------
-  private
   def generate_security_header(http_method, params={})
     require 'digest/hmac'
     header = http_method.to_s.upcase
