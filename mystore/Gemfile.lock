@@ -67,9 +67,7 @@ GEM
       nokogiri (>= 1.4.4)
       uuidtools (~> 2.1)
     bcrypt (3.1.7)
-<<<<<<< HEAD
     bcrypt (3.1.7-x86-mingw32)
-=======
     better_errors (1.1.0)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
@@ -77,7 +75,6 @@ GEM
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.1.1.1)
       sass (~> 3.2)
->>>>>>> a867fea971ca37214ecf44e7175c528e3c426a4d
     builder (3.1.4)
     cancan (1.6.10)
     canonical-rails (0.0.7)
@@ -154,18 +151,16 @@ GEM
       monetize (~> 0.1.3)
     multi_json (1.10.0)
     multi_xml (0.5.5)
-<<<<<<< HEAD
-    nokogiri (1.6.1)
-      mini_portile (~> 0.5.0)
-    nokogiri (1.6.1-x86-mingw32)
-      mini_portile (~> 0.5.0)
-=======
     multipart-post (2.0.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.1)
+    nokogiri (1.6.1)
+      mini_portile (~> 0.5.0)
+    nokogiri (1.6.1-x86-mingw32)
+      mini_portile (~> 0.5.0)
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
     oauth (0.4.7)
@@ -175,7 +170,6 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (~> 1.2)
->>>>>>> a867fea971ca37214ecf44e7175c528e3c426a4d
     orm_adapter (0.5.0)
     paperclip (3.4.2)
       activemodel (>= 3.0.0)
@@ -330,13 +324,10 @@ DEPENDENCIES
   jquery-rails
   json
   money (= 6.0.1)
-<<<<<<< HEAD
   net-scp
   net-sftp
   net-ssh
-=======
   rack-cors
->>>>>>> 078648827e603b3e09db30d15dcc808703b08867
   rails (= 4.0.4)
   rest-client (~> 1.6.7)
   ruby-hmac
