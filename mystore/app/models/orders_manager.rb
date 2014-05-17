@@ -5,24 +5,36 @@ class OrdersManager < ActiveRecord::Base
 	def self.fetchOrders
 		ftp = Connectors::FTPConnector.new
 		@vtiger = Connectors::VtigerConnector.new
-		
-		ftp.getPedidosNuevos().each do |p| #asumo son pedidos nuevos/no resueltos
-			#check fecha?
+
+		JSON.parse(ftp.getPedidosNuevos().to_json).each do |p| #asumo son pedidos nuevos/no resueltos
+
 			pedido = p["Pedidos"]
+
 			if @vtiger.checkClient(pedido["direccionID"], pedido["rut"])
-				pedido["Pedido"].each do |sub_pedido|
-					check(pedido, sub_pedido)
+				var = true
+				pedido["Pedido"].each do |pedidos|
+					var = checkPedidos(pedido, pedidos)
+				end
+				if var
+					pedido["Pedido"].each do |pedidos|
+						gestionarPedidos(pedido, pedidos)
+					end
 				end
 			end
 		end
 	end
 
+	def self.checkPedidos (pedido, pedidos)
+		
+		unless pedidos["cantidad"] <= warehouse.obtenerStock(pedidos["sku"]) - Reserve.getReservas(pedidos["sku"]) + Reserve.getReserva(rut_cliente, pedidos["sku"])
+			return false
+		end
+	end
 
 #######-----LEER-------####
 # Mongo y Princing no estan definidos
-# El reporte de venta tiene que incluir el precio del producto
 
-	def self.check (pedido, sub_pedido)
+	def self.gestionarPedidos (pedido, pedidos)
 
 		warehouse = Connectors::WarehouseConnector.new
 
@@ -30,24 +42,24 @@ class OrdersManager < ActiveRecord::Base
 			"rut" => pedido["rut"],
 			"fecha" => pedido["fecha"],
 			"producto" => {
-				"sku" => sub_pedido["sku"],
-				"cantidad" => sub_pedido["cantidad"]
+				"sku" => pedidos["sku"],
+				"cantidad" => pedidos["cantidad"]
 			}
 		}
 
-		if sub_pedido["cantidad"] <= warehouse.obtenerStock(sub_pedido["sku"]) - Reserve.getReservas(sub_pedido["sku"]) + Reserve.getReserva(rut_cliente, sub_pedido["sku"])
-			Reserve.usarReserva(pedido["rut"], sub_pedido["sku"], [Reserve.getReserva(rut_cliente, sub_pedido["sku"]), sub_pedido["cantidad"]].min)
+		if pedidos["cantidad"] <= warehouse.obtenerStock(pedidos["sku"]) - Reserve.getReservas(pedidos["sku"]) + Reserve.getReserva(rut_cliente, pedidos["sku"])
+			Reserve.usarReserva(pedido["rut"], pedidos["sku"], [Reserve.getReserva(rut_cliente, pedidos["sku"]), pedidos["cantidad"]].min)
 
-			warehouse.realizarDespacho(sub_pedido["sku"], @vtiger.getAddress(pedido["direccionID"]), sub_pedido["cantidad"])
+			warehouse.realizarDespacho(pedidos["sku"], @vtiger.getAddress(pedido["direccionID"]), pedidos["cantidad"])
 			
-			order["precio"] = Pricing.getPrecio(sub_pedido["sku"])
-			Mongo.ReportarVenta(order)
+			order["precio"] = Pricing.getPrecio(pedidos["sku"])
+			Mongo.ReportarVenta(order) if ENV["IN_PRODUCTION"] == "true"
 			return	
 
-		elsif sub_pedido["cantidad"] > warehouse.obtenerStock(sub_pedido["sku"]) and Reserve.getReservas(sub_pedido["sku"]) == 0
-			warehouse.pedirOtraBodega(sub_pedido["sku"], sub_pedido["cantidad"] - warehouse.obtenerStock(sub_pedido["sku"]))
+		elsif pedidos["cantidad"] > warehouse.obtenerStock(pedidos["sku"]) and Reserve.getReservas(pedidos["sku"]) == 0
+			warehouse.pedirOtraBodega(pedidos["sku"], pedidos["cantidad"] - warehouse.obtenerStock(pedidos["sku"]))
 		end
 
-		Mongo.Report_BrokeStock(order)
+		Mongo.Report_BrokeStock(order) if ENV["IN_PRODUCTION"] == "true"
 	end
 end

@@ -29,4 +29,5 @@ Mystore::Application.configure do
   ENV["WAREHOUSE_ADDRESS"] = "http://bodega-integracion-2014.herokuapp.com"
   ENV["WAREHOUSE_PRIVATE_KEY"] = "1PIohML3"
   #ENV["NOMBRE_SPREADSHEET"] = "ReservasG8Testing"
+  ENV["IN_PRODUCTION"] = "false" 
 end
