@@ -8,6 +8,13 @@ Bundler.require(*Rails.groups)
 
 module Mystore
   class Application < Rails::Application
+
+    config.middleware.insert_after Rails::Rack::Logger, Rack::Cors, :debug => true, :logger => Rails.logger do
+        allow do
+            origins '*'
+            resource '/api*', :headers => :any, :methods => [:post]
+        end
+    end
     
     config.to_prepare do
       # Load application's model / class decorators
