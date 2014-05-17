@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140516141652) do
+ActiveRecord::Schema.define(version: 20140517185241) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
@@ -45,6 +45,12 @@ ActiveRecord::Schema.define(version: 20140516141652) do
     t.date     "delivery_date"
     t.datetime "order_date"
     t.integer  "client_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "orders_sftps", force: true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -91,6 +97,11 @@ ActiveRecord::Schema.define(version: 20140516141652) do
     t.datetime "updated_at"
     t.string   "client_id"
     t.string   "responsible"
+  end
+
+  create_table "sftp_connectors", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "spree_addresses", force: true do |t|

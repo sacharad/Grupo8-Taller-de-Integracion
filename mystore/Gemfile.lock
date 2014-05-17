@@ -151,6 +151,11 @@ GEM
     multi_json (1.10.0)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-sftp (2.1.2)
+      net-ssh (>= 2.6.5)
+    net-ssh (2.9.1)
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
     oauth (0.4.7)
@@ -309,7 +314,11 @@ DEPENDENCIES
   google_drive
   jbuilder (~> 1.2)
   jquery-rails
+  json
   money (= 6.0.1)
+  net-scp
+  net-sftp
+  net-ssh
   rails (= 4.0.4)
   rest-client (~> 1.6.7)
   ruby-hmac

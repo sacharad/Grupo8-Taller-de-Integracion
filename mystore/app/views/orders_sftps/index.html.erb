@@ -1,0 +1,27 @@
+<h1>Listing orders_sftps</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @orders_sftps.each do |orders_sftp| %>
+      <tr>
+        <td><%= orders_sftp.name %></td>
+        <td><%= link_to 'Show', orders_sftp %></td>
+        <td><%= link_to 'Edit', edit_orders_sftp_path(orders_sftp) %></td>
+        <td><%= link_to 'Destroy', orders_sftp, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Orders sftp', new_orders_sftp_path %>

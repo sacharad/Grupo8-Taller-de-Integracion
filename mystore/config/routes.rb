@@ -2,6 +2,8 @@ Mystore::Application.routes.draw do
 
   
 
+  
+
   mount Spree::Core::Engine, :at => '/ecommerce'
 
   match '/api_test', to: 'api_test#index', via: 'get'
@@ -10,6 +12,7 @@ Mystore::Application.routes.draw do
   resources :prices
   resources :reserves
   resources :orders
+  resources :orders_sftps
   resources :clients
   resources :products
   get '/bodega/almacenes', to: 'warehouse#index', as:'bodega'
