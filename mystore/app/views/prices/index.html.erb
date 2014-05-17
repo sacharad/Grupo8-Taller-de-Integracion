@@ -1,0 +1,37 @@
+<h1>Listing prices</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Price</th>
+      <th>Update date</th>
+      <th>Validity date</th>
+      <th>Disposition expense</th>
+      <th>Transfer charge</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @prices.each do |price| %>
+      <tr>
+        <td><%= price.type %></td>
+        <td><%= price.price %></td>
+        <td><%= price.update_date %></td>
+        <td><%= price.validity_date %></td>
+        <td><%= price.disposition_expense %></td>
+        <td><%= price.transfer_charge %></td>
+        <td><%= link_to 'Show', price %></td>
+        <td><%= link_to 'Edit', edit_price_path(price) %></td>
+        <td><%= link_to 'Destroy', price, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Price', new_price_path %>

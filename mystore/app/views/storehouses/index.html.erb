@@ -1,0 +1,29 @@
+<h1>Listing storehouses</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Capacity</th>
+      <th>Type</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @storehouses.each do |storehouse| %>
+      <tr>
+        <td><%= storehouse.capacity %></td>
+        <td><%= storehouse.type %></td>
+        <td><%= link_to 'Show', storehouse %></td>
+        <td><%= link_to 'Edit', edit_storehouse_path(storehouse) %></td>
+        <td><%= link_to 'Destroy', storehouse, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Storehouse', new_storehouse_path %>

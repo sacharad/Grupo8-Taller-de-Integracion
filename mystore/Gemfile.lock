@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/spree/spree_auth_devise.git
-  revision: e75c1f021c4353b2e10474dfb9181dc8d4571b40
+  revision: 4959656be98742249f85879207a606e05d622cc6
   branch: 2-2-stable
   specs:
     spree_auth_devise (2.2.0)
@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: https://github.com/spree/spree_gateway.git
-  revision: 8d3c09fd63ee61676b5a3b5be37e05b482379db9
+  revision: 46b8610fd1db198410542374536c7cb17263b1a3
   branch: 2-2-stable
   specs:
     spree_gateway (2.2.1)
@@ -31,10 +31,10 @@ GEM
       erubis (~> 2.7.0)
       rack (~> 1.5.2)
       rack-test (~> 0.6.2)
-    active_utils (2.0.2)
+    active_utils (2.1.1)
       activesupport (>= 2.3.11)
       i18n
-    activemerchant (1.42.8)
+    activemerchant (1.42.9)
       active_utils (~> 2.0, >= 2.0.1)
       activesupport (>= 2.3.14, < 5.0.0)
       builder (>= 2.1.2, < 4.0.0)
@@ -60,22 +60,34 @@ GEM
     acts_as_list (0.3.0)
       activerecord (>= 3.0)
     arel (4.0.2)
-    awesome_nested_set (3.0.0.rc.3)
+    awesome_nested_set (3.0.0.rc.5)
       activerecord (>= 4.0.0, < 5)
     aws-sdk (1.27.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
       uuidtools (~> 2.1)
     bcrypt (3.1.7)
+<<<<<<< HEAD
     bcrypt (3.1.7-x86-mingw32)
+=======
+    better_errors (1.1.0)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
+    bootstrap-sass (3.1.1.1)
+      sass (~> 3.2)
+>>>>>>> a867fea971ca37214ecf44e7175c528e3c426a4d
     builder (3.1.4)
     cancan (1.6.10)
     canonical-rails (0.0.7)
       rails (>= 3.1, < 5.0)
+    chronic (0.10.2)
     climate_control (0.0.3)
       activesupport (>= 3.0)
     cocaine (0.5.4)
       climate_control (>= 0.0.3, < 1.0)
+    coderay (1.1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -84,6 +96,7 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     colorize (0.7.2)
+    debug_inspector (0.0.2)
     deface (1.0.0)
       colorize (>= 0.5.8)
       nokogiri (~> 1.6.0)
@@ -98,9 +111,17 @@ GEM
       devise (>= 2.1.0)
     erubis (2.7.0)
     execjs (2.0.2)
+    faraday (0.9.0)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.9.1)
+      faraday (>= 0.7.4, < 0.10)
     ffaker (1.24.0)
     friendly_id (5.0.3)
       activerecord (>= 4.0.0)
+    google_drive (0.3.9)
+      nokogiri (>= 1.4.4, != 1.5.2, != 1.5.1)
+      oauth (>= 0.3.6)
+      oauth2 (>= 0.5.0)
     highline (1.6.21)
     hike (1.2.3)
     httparty (0.13.1)
@@ -116,6 +137,8 @@ GEM
     jquery-ui-rails (4.1.2)
       railties (>= 3.1.0)
     json (1.8.1)
+    jwt (0.1.13)
+      multi_json (>= 1.5)
     kaminari (0.15.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -123,18 +146,36 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.25.1)
-    mini_portile (0.5.3)
+    mini_portile (0.6.0)
     minitest (4.7.5)
     monetize (0.1.4)
     money (6.0.1)
       i18n (~> 0.6.4)
       monetize (~> 0.1.3)
-    multi_json (1.9.2)
+    multi_json (1.10.0)
     multi_xml (0.5.5)
+<<<<<<< HEAD
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     nokogiri (1.6.1-x86-mingw32)
       mini_portile (~> 0.5.0)
+=======
+    multipart-post (2.0.0)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-sftp (2.1.2)
+      net-ssh (>= 2.6.5)
+    net-ssh (2.9.1)
+    nokogiri (1.6.2.1)
+      mini_portile (= 0.6.0)
+    oauth (0.4.7)
+    oauth2 (0.9.3)
+      faraday (>= 0.8, < 0.10)
+      jwt (~> 0.1.8)
+      multi_json (~> 1.3)
+      multi_xml (~> 0.5)
+      rack (~> 1.2)
+>>>>>>> a867fea971ca37214ecf44e7175c528e3c426a4d
     orm_adapter (0.5.0)
     paperclip (3.4.2)
       activemodel (>= 3.0.0)
@@ -150,6 +191,7 @@ GEM
     rabl (0.9.3)
       activesupport (>= 2.3.14)
     rack (1.5.2)
+    rack-cors (0.2.9)
     rack-test (0.6.2)
       rack (>= 1.0)
     rails (4.0.4)
@@ -165,13 +207,16 @@ GEM
       activesupport (= 4.0.4)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (10.2.2)
+    rake (10.3.2)
     ransack (1.1.0)
       actionpack (>= 3.0)
       activerecord (>= 3.0)
       polyamorous (~> 0.6.0)
     rdoc (4.1.1)
       json (~> 1.4)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    ruby-hmac (0.4.0)
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)
@@ -265,17 +310,36 @@ GEM
       tzinfo
     warden (1.2.3)
       rack (>= 1.0)
+    whenever (0.9.2)
+      activesupport (>= 2.3.4)
+      chronic (>= 0.6.3)
 
 PLATFORMS
   ruby
   x86-mingw32
 
 DEPENDENCIES
+  better_errors
+  binding_of_caller
+  bootstrap-sass (~> 3.1.1)
   coffee-rails (~> 4.0.0)
+  faraday
+  faraday_middleware
+  google_drive
   jbuilder (~> 1.2)
   jquery-rails
+  json
   money (= 6.0.1)
+<<<<<<< HEAD
+  net-scp
+  net-sftp
+  net-ssh
+=======
+  rack-cors
+>>>>>>> 078648827e603b3e09db30d15dcc808703b08867
   rails (= 4.0.4)
+  rest-client (~> 1.6.7)
+  ruby-hmac
   sass-rails (~> 4.0.2)
   sdoc
   spree (= 2.2.1)
@@ -284,3 +348,4 @@ DEPENDENCIES
   sqlite3
   turbolinks
   uglifier (>= 1.3.0)
+  whenever
