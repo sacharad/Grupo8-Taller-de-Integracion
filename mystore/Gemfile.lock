@@ -180,6 +180,7 @@ GEM
     rabl (0.9.3)
       activesupport (>= 2.3.14)
     rack (1.5.2)
+    rack-cors (0.2.9)
     rack-test (0.6.2)
       rack (>= 1.0)
     rails (4.0.4)
@@ -316,9 +317,13 @@ DEPENDENCIES
   jquery-rails
   json
   money (= 6.0.1)
+<<<<<<< HEAD
   net-scp
   net-sftp
   net-ssh
+=======
+  rack-cors
+>>>>>>> 078648827e603b3e09db30d15dcc808703b08867
   rails (= 4.0.4)
   rest-client (~> 1.6.7)
   ruby-hmac

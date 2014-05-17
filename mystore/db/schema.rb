@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20140517185241) do
+=======
+ActiveRecord::Schema.define(version: 20140517195033) do
+
+  create_table "autorizacions", force: true do |t|
+    t.string   "grupo"
+    t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+>>>>>>> 078648827e603b3e09db30d15dcc808703b08867
 
   create_table "categories", force: true do |t|
     t.string   "name"

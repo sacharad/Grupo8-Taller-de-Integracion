@@ -1,0 +1,57 @@
+<div class="row">
+  <h1>Api Grupo 8</h1>
+</div>
+<div class="row">
+  <div class="well">
+    <div class="row-fluid">
+      <h2>pedirProductos(POST)</h2>
+
+      <h3>Descripción:</h3>
+      <p> Mueve producto con el SKU dado desde la bodega a la bodega de destino. El producto enviado corresponde a lo que se solicitó. Si no se logra suplir el pedido, se retorna un error.</p>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <h4>Url:</h4>
+        <p>/api/pedirProducto</p>
+      </div>
+      <div class="col-md-3">
+        <h4>Parámetros:</h4>
+        <p>{usuario}: grupoX donde X es el número del grupo</p>
+        <p>{password}: La password que nos manden codificada en sha1</p>  
+        <p>{almacen_id}: El id del almacén de recepción del grupo</p>
+        <p>{SKU}: El SKU del producto</p>
+        <p>{cantidad}: Cantidad de producto que se desea mover</p>
+      </div>
+      <div class="col-md-3">
+        <h4>Retorno:</h4>
+        <p>{</p>
+        <p>SKU: sku,            //String</p>
+        <p>cantidad: int         //Cantidad que logró enviar (Puede ser menos de lo solicitado)</p>
+        <p>}</p>
+      </div>
+      <div class="col-md-3">
+        <h4>Caso de error:</h4>
+        <p>{</p>
+        error: mensaje //String</p>
+        <p>}</p>
+      </div>
+    </div>
+
+    
+    <div class="row-fluid">
+      <h3>Ejemplo:</h3>
+      <p>http://integra8.ing.puc.cl/api/pedirProducto?sku=12345a&cantidad=300</p>
+      <p>Si el pedido es correcto, la respuesta es</p>
+
+      <p>{"sku":"12345a","cantidad":250}</p>
+
+      <p>Si no es correcto, es</p>
+
+      <p>{"error":"No existe el producto"} </p>
+      <p>{"error":"Autentificacion fallida"}</p>
+      <p>{"error":"Almacen de destino rechaza envio"}</p>
+
+      <p>Saludos
+    </div>
+  </div>
+</div>

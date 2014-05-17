@@ -81,4 +81,11 @@ Mystore::Application.configure do
   ENV["WAREHOUSE_ADDRESS"] = "http://bodega-integracion-2014.herokuapp.com"
   ENV["WAREHOUSE_PRIVATE_KEY"] = "1PIohML3"
   #ENV["NOMBRE_SPREADSHEET"]= "ReservasG8Testing"
+
+  #------IDS de Almacenes de la Bodega
+  ENV["ALMACEN_RECEPCION"] = "53571e21682f95b80b78107d"
+  ENV["ALMACEN_DESPACHO"] = "53571e21682f95b80b78107e"
+  ENV["ALMACEN_PULMON"] = "53571e29682f95b80b786eb8"
+  ENV["ALMACEN_LIBRE_DISPOSICION"] = "53571e21682f95b80b78107f"
+  ENV["ALMACEN_X"] = "53571e29682f95b80b786eb7"
 end
