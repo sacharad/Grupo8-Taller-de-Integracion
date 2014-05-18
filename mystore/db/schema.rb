@@ -11,7 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140503194300) do
+ActiveRecord::Schema.define(version: 20140517195033) do
+
+  create_table "autorizacions", force: true do |t|
+    t.string   "grupo"
+    t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "categories", force: true do |t|
+    t.string   "name"
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "categories", ["product_id"], name: "index_categories_on_product_id"
 
   create_table "clients", force: true do |t|
     t.string   "phone_number"
@@ -40,6 +56,12 @@ ActiveRecord::Schema.define(version: 20140503194300) do
     t.datetime "updated_at"
   end
 
+  create_table "orders_sftps", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "prices", force: true do |t|
     t.string   "type"
     t.integer  "price"
@@ -63,6 +85,7 @@ ActiveRecord::Schema.define(version: 20140503194300) do
     t.string   "brand"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "model"
   end
 
   create_table "products_storehouses", force: true do |t|
@@ -73,11 +96,17 @@ ActiveRecord::Schema.define(version: 20140503194300) do
   end
 
   create_table "reserves", force: true do |t|
-    t.string   "unit"
+    t.string   "sku"
     t.integer  "amount"
     t.date     "date"
-    t.integer  "client_id"
     t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "client_id"
+    t.string   "responsible"
+  end
+
+  create_table "sftp_connectors", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end

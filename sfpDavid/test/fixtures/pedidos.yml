@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  Fecha: MyString
+  Hora: MyString
+  Rut: MyString
+  Fecha: MyString
+  Sku: MyString
+  CantidadUnidad: MyString
+
+two:
+  Fecha: MyString
+  Hora: MyString
+  Rut: MyString
+  Fecha: MyString
+  Sku: MyString
+  CantidadUnidad: MyString

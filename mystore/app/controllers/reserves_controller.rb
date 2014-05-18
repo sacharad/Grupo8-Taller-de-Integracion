@@ -3,6 +3,7 @@ class ReservesController < ApplicationController
 
   # GET /reserves
   # GET /reserves.json
+
   def index
     @reserves = Reserve.all
   end

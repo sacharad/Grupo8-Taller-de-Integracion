@@ -34,6 +34,16 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+
+gem 'bootstrap-sass', '~> 3.1.1'
+gem 'faraday'
+gem 'faraday_middleware'
+gem 'ruby-hmac'
+gem 'rack-cors', :require => 'rack/cors'
+group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
+end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -46,9 +56,16 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'net-sftp'
+gem 'net-ssh'
+gem 'net-scp'
+
+gem 'json'
+
 gem 'spree', '2.2.1'
 gem 'spree_gateway', :git => 'https://github.com/spree/spree_gateway.git', :branch => '2-2-stable'
 gem 'spree_auth_devise', :git => 'https://github.com/spree/spree_auth_devise.git', :branch => '2-2-stable'
+
 
 gem "httparty"
 gem 'rest-client', '~> 1.6.7'
@@ -59,3 +76,9 @@ gem 'dropbox-sdk'
 #To mongo database
 gem 'mongo'
 gem 'bson_ext'
+
+gem 'rest-client', '~> 1.6.7'
+gem 'whenever', :require => false
+gem 'google_drive'
+
+

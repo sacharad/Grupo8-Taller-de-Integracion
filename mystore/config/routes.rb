@@ -1,22 +1,31 @@
 Mystore::Application.routes.draw do
 
+
+  mount Spree::Core::Engine, :at => '/ecommerce'
+
   get "services/new"
   get "services/show" 
   get "prices/precios_db"
 
-  resources :storehouses
-
-  resources :prices
-
-  resources :reserves
-
-  resources :orders
-
-  resources :clients
-
-  resources :products
 
   match '/api_test', to: 'api_test#index', via: 'get'
+  root :to => 'home#index' 
+  resources :storehouses
+  resources :prices
+  resources :reserves
+  resources :orders
+  resources :orders_sftps
+  resources :clients
+  resources :products
+  get '/bodega/almacenes', to: 'warehouse#index', as:'bodega'
+  get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
+  get '/bodega/almacenes/:almacen_id/sku/:sku_id', to: 'warehouse#sku', as:'sku'
+
+  scope :path => "/api" do
+    get "/" => 'api#index', as: 'api_docs'
+    match "/pedirProducto" => "api#despachar_producto_otra_bodega", via: [:post]
+  end
+
 
 
   # This line mounts Spree's routes at the root of your application.
@@ -24,12 +33,11 @@ Mystore::Application.routes.draw do
   # If you would like to change where this engine is mounted, simply change the :at option to something different.
   #
   # We ask that you don't use the :as option here, as Spree relies on it being the default of "spree"
-  mount Spree::Core::Engine, :at => '/'
+  
           # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

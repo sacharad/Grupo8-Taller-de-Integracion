@@ -9,10 +9,18 @@ Bundler.require(*Rails.groups)
 module Mystore
   class Application < Rails::Application
 
+####
     config.i18n.enforce_available_locales = true
     # or if one of your gem compete for pre-loading, use
     I18n.config.enforce_available_locales = true
-    
+####
+    config.middleware.insert_after Rails::Rack::Logger, Rack::Cors, :debug => true, :logger => Rails.logger do
+        allow do
+            origins '*'
+            resource '/api*', :headers => :any, :methods => [:post]
+        end
+    end
+
     config.to_prepare do
       # Load application's model / class decorators
       Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|
