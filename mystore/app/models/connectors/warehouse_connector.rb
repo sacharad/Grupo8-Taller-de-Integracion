@@ -33,8 +33,22 @@ class Connectors::WarehouseConnector
     sku_stock
   end
   
-  def realizarDespacho(sku_id, cantidad) 
-
+  def realizarDespacho(sku, direccion, precio, pedidoId) 
+    if sku.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
+      return false
+    end
+    #-----Comienzo envío de productos a bodega externa ------
+    a = moverStock(sku, ENV["ALMACEN_DESPACHO"])
+    if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
+      b = despacharStock(sku, direccion, precio, pedidoId)
+      if !b.nil? #Si hay error en despachar, pass
+        return true
+      else
+        return false
+      end
+    else
+      return false
+    end
   end
 
   def pedirOtraBodega(sku,cantidad)
@@ -44,7 +58,7 @@ class Connectors::WarehouseConnector
     Autorizacion.all.each do |a|
       cantidad_a_pedir = (cantidad_acumulada < cantidad) ? (cantidad - cantidad_acumulada) : 0
       if cantidad_a_pedir > 0
-        warehouse_url => "http://integra"+a.grupo[a.grupo.length-1].to_s+".ing.puc.cl/",
+        warehouse_url = "http://integra"+a.grupo[a.grupo.length-1].to_s+".ing.puc.cl/"
 
         @conn_otra_bodega = Faraday.new(:url => warehouse_url) do |faraday|
           faraday.request :json
@@ -64,12 +78,14 @@ class Connectors::WarehouseConnector
           }
         }
         respuesta = get_otra_bodega(options)
-        cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"]
+        cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
         cantidad_acumulada += cantidad_recibida
       end
     end
-
+    json_response = {:cantidad_recibida => cantidad_recibida }
+    return json_response
   end
+
   def get_otra_bodega(options={})
     Rails.logger.info "Attempting to GET to #{options[:warehouse_url]}#{options[:path]}"
     response = @conn_otra_bodega.get do |req|                           
