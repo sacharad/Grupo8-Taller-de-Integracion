@@ -2,13 +2,7 @@ Mystore::Application.routes.draw do
 
   get "services/new"
   get "services/show" 
-  get "pricing/read_file_dbprecios"
   get "prices/precios_db"
-
-    #Dropbox Routes
-  get '/pricing/authorize'   => 'pricing#authorize' , :method => :get , :as => :pricing_auth
-  get '/pricing/callback' => 'pricing#callback' , :method => :get , :as =>  :pricing_callback
-  get '/pricing/read_prices'   => 'pricing#read_prices' , :method => :get , :as => :read_prices
 
   resources :storehouses
 
