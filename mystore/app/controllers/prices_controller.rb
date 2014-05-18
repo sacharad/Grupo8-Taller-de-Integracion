@@ -61,6 +61,15 @@ class PricesController < ApplicationController
     end
   end
 
+  def precios_db
+
+    @pricing = Price.read_file_dbprecios
+    respond_to do |format|
+    format.html { redirect_to prices_url }
+    format.json { head :no_content }
+   end 
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_price

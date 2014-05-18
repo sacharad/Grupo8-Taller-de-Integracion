@@ -1,6 +1,12 @@
 Mystore::Application.routes.draw do
 
+
   mount Spree::Core::Engine, :at => '/ecommerce'
+
+  get "services/new"
+  get "services/show" 
+  get "prices/precios_db"
+
 
   match '/api_test', to: 'api_test#index', via: 'get'
   root :to => 'home#index' 
@@ -19,6 +25,7 @@ Mystore::Application.routes.draw do
     get "/" => 'api#index', as: 'api_docs'
     match "/pedirProducto" => "api#despachar_producto_otra_bodega", via: [:post]
   end
+
 
 
   # This line mounts Spree's routes at the root of your application.

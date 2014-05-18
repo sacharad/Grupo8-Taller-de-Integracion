@@ -26,6 +26,7 @@ Mystore::Application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
+
   ENV["WAREHOUSE_ADDRESS"] = "http://bodega-integracion-2014.herokuapp.com"
   ENV["WAREHOUSE_PRIVATE_KEY"] = "1PIohML3"
   #ENV["NOMBRE_SPREADSHEET"] = "ReservasG8Testing"
@@ -36,4 +37,5 @@ Mystore::Application.configure do
   ENV["ALMACEN_PULMON"] = "53571e29682f95b80b786eb8"
   ENV["ALMACEN_LIBRE_DISPOSICION"] = "53571e21682f95b80b78107f"
   ENV["ALMACEN_X"] = "53571e29682f95b80b786eb7"
+
 end
