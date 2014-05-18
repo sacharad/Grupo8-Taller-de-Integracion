@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  expense: 1
+  sku: MyString
+  image: 
+  description: MyText
+  brand: MyString
+
+two:
+  expense: 1
+  sku: MyString
+  image: 
+  description: MyText
+  brand: MyString

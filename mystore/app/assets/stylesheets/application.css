@@ -9,5 +9,14 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require bootstrap
  *= require_tree .
  */
+
+body {
+  padding-top: 80px;
+  background-color: white;
+  color: #2c3e50;
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}

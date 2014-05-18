@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type: 
+  price: 1
+  update_date: 2014-05-03
+  validity_date: 2014-05-03
+  disposition_expense: 1
+  transfer_charge: 1
+
+two:
+  type: 
+  price: 1
+  update_date: 2014-05-03
+  validity_date: 2014-05-03
+  disposition_expense: 1
+  transfer_charge: 1
