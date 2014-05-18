@@ -30,6 +30,7 @@ class Order < ActiveRecord::Base
 		
 	end
 
+	#example info: {"fecha" => "12/03/2013", "hora" => "16:00", "rut" =>"171234560", "producto" => {"sku" => "US123", "cantidad" => 3}}
 	def self.report_brokestock(quiebre)
 		insert_report("Reporte_QuiebresStock",sale)
 	end
@@ -37,6 +38,7 @@ class Order < ActiveRecord::Base
 	def self.report_orderwrong(order)
 		insert_report("Reporte_OrdenesIncorrectas",order)
 	end
+
 
 	##Metodos internos solo para probar los insert en Mongo
 
