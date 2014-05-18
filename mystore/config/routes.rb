@@ -17,6 +17,7 @@ Mystore::Application.routes.draw do
   resources :orders_sftps
   resources :clients
   resources :products
+  get '/dashboard', to:'dashboard#index', as: 'dashboard'
   get '/bodega/almacenes', to: 'warehouse#index', as:'bodega'
   get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
   get '/bodega/almacenes/:almacen_id/sku/:sku_id', to: 'warehouse#sku', as:'sku'
