@@ -54,7 +54,7 @@ class ApiController < ApplicationController
         end
         
       end
-      render :json => [:SKU => sku.to_s, :cantidad => cantidad_despachada].to_json and return
+      render :json => [:SKU => sku.to_s, :cantidad => cantidad_despachada.to_i].to_json and return
     end
     
     

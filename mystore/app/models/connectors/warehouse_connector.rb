@@ -38,9 +38,51 @@ class Connectors::WarehouseConnector
   end
 
   def pedirOtraBodega(sku,cantidad)
-    
-  end
+    cantidad_acumulada = 0
+    cantidad = cantidad.to_i
 
+    Autorizacion.all.each do |a|
+      cantidad_a_pedir = (cantidad_acumulada < cantidad) ? (cantidad - cantidad_acumulada) : 0
+      if cantidad_a_pedir > 0
+        warehouse_url => "http://integra"+a.grupo[a.grupo.length-1].to_s+".ing.puc.cl/",
+
+        @conn_otra_bodega = Faraday.new(:url => warehouse_url) do |faraday|
+          faraday.request :json
+          faraday.response :logger   
+          faraday.response :json, :content_type => "application/json"               
+          faraday.adapter  Faraday.default_adapter  
+        end
+
+        options = {
+          :path => "/api/pedirProducto",
+          :params => {
+            :usuario => a.grupo,
+            :almacen_id => ENV["ALMACEN_RECEPCION"],
+            :password => Base64.encode64(Digest::HMAC.digest(ENV["API_PASSWORD"], ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
+            :SKU => sku,
+            :cantidad => cantidad_a_pedir
+          }
+        }
+        respuesta = get_otra_bodega(options)
+        cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"]
+        cantidad_acumulada += cantidad_recibida
+      end
+    end
+
+  end
+  def get_otra_bodega(options={})
+    Rails.logger.info "Attempting to GET to #{options[:warehouse_url]}#{options[:path]}"
+    response = @conn_otra_bodega.get do |req|                           
+        req.url options[:path]
+        req.params = options[:params] unless options[:params].nil?
+    end
+    if response.status < 300
+      return JSON.parse response.body.to_json 
+    else
+      Rails.logger.info "GET WAREHOUSE PRODUCT FAILED: "+response.body.to_s
+      return nil
+    end
+  end
   #---------------------------HTTP Type Methods ----------------------------------------------
 
   def get(options={})
