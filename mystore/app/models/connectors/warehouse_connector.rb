@@ -103,6 +103,7 @@ class Connectors::WarehouseConnector
 
   def get(options={})
     Rails.logger.info "Attempting to GET to #{@server_address}#{options[:path]}"
+    Rails.logger.info "With Params: "+options[:params].to_json.to_s
     response = @conn.get do |req|                           
         req.url options[:path]
         req.params = options[:params] unless options[:params].nil?
@@ -117,7 +118,8 @@ class Connectors::WarehouseConnector
   end
 
   def post(options={})
-    Rails.logger.info "Attempting to POST to #{@server_address}#{:path}"
+    Rails.logger.info "Attempting to POST to #{@server_address}#{options[:path]}"
+    Rails.logger.info "With Params: "+options[:body].to_json.to_s
     response = @conn.post do |req|
         req.url options[:path]
         req.body = options[:body].to_json unless options[:body].nil?
@@ -131,7 +133,8 @@ class Connectors::WarehouseConnector
     end  end
 
   def delete(options={})
-    Rails.logger.info "Attempting to DELETE to #{@server_address}#{:path}"
+    Rails.logger.info "Attempting to DELETE to #{@server_address}#{options[:path]}"
+    Rails.logger.info "With Params: "+options[:body].to_json.to_s
     response = @conn.delete do |req|
         req.url options[:path]
         req.body = options[:body].to_json unless options[:body].nil?
@@ -179,7 +182,7 @@ class Connectors::WarehouseConnector
     options = {
       :path => "/moveStock",
       :headers => generate_security_header("post", [productoId,almacenId]),
-      :params => {
+      :body => {
         :almacenId => almacenId,
         :productoId => productoId
       }
@@ -190,7 +193,7 @@ class Connectors::WarehouseConnector
     options = {
       :path => "/moveStockBodega",
       :headers => generate_security_header("post", [productoId,almacenId]),
-      :params => {
+      :body => {
         :almacenId => almacenId,
         :productoId => productoId
       }
@@ -201,7 +204,7 @@ class Connectors::WarehouseConnector
     options = {
       :path => "/stock",
       :headers => generate_security_header("delete", [productoId,direccion,precio,pedidoId]),
-      :params => {
+      :body => {
         :almacenId => almacenId,
         :productoId => productoId,
         :precio => precio,
