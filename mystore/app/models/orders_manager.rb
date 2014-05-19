@@ -4,61 +4,73 @@ class OrdersManager < ActiveRecord::Base
 
 	def self.fetchOrders
 		ftp = Connectors::SftpConnector.new
-		@vtiger = Connectors::VtigerConnector.new
-		puts "-----1"
+		vtiger = Connectors::VtigerConnector.new
+		@warehouse = Connectors::WarehouseConnector.new
+
 		ftp.getPedidosNuevos().each do |p| #asumo son pedidos nuevos/no resueltos
+			#UBUNTU - CAMBIAR ESTO POR: 
+			#pedido = p["Pedidos"]
+			pedido = p[1]
 
-
-			 if @vtiger.checkClient(pedido["direccionID"], pedido["rut"])
-				var = true
-				pedido["Pedido"].each do |pedidos|
-					var = checkPedidos(pedido, pedidos)
-				end
-				if var
-					pedido["Pedido"].each do |pedidos|
-						gestionarPedidos(pedido, pedidos)
-					end
-				end
-			end
-		end
-	end
-
-	def self.checkPedidos (pedido, pedidos)
-		
-		unless pedidos["cantidad"] <= warehouse.obtenerStock(pedidos["sku"]) - Reserve.getReservas(pedidos["sku"]) + Reserve.getReserva(rut_cliente, pedidos["sku"])
-			return false
-		end
-	end
-
-#######-----LEER-------####
-# Mongo y Princing no estan definidos
-
-	def self.gestionarPedidos (pedido, pedidos)
-
-		warehouse = Connectors::WarehouseConnector.new
-
-		order = {
-			"rut" => pedido["rut"],
-			"fecha" => pedido["fecha"],
-			"producto" => {
-				"sku" => pedidos["sku"],
-				"cantidad" => pedidos["cantidad"]
+			reporte = {
+				"pedidoID" => pedido["pedidoID"], 
+				"fecha" => pedido["fecha"],
+				"hora" => pedido["hora"],
+				"direccion" => vtiger.getAddress(pedido["direccionID"]),
+				"rut" => pedido["rut"]
 			}
-		}
+			if vtiger.checkClient(pedido["direccionID"], pedido["rut"])
+				quiebre = false
 
-		if pedidos["cantidad"] <= warehouse.obtenerStock(pedidos["sku"]) - Reserve.getReservas(pedidos["sku"]) + Reserve.getReserva(rut_cliente, pedidos["sku"])
-			Reserve.usarReserva(pedido["rut"], pedidos["sku"], [Reserve.getReserva(rut_cliente, pedidos["sku"]), pedidos["cantidad"]].min)
+				reporte["pedidos"] = []			
+				pedido["Pedido"].each do |pedidos|
 
-			warehouse.realizarDespacho(pedidos["sku"], @vtiger.getAddress(pedido["direccionID"]), pedidos["cantidad"])
-			
-			order["precio"] = Pricing.getPrecio(pedidos["sku"])
-			Mongo.ReportarVenta(order) if ENV["IN_PRODUCTION"] == "true"
-			return	
+					rep_indv = checkPedido(pedido["rut"], pedidos)
 
-		elsif pedidos["cantidad"] > warehouse.obtenerStock(pedidos["sku"]) and Reserve.getReservas(pedidos["sku"]) == 0
-			warehouse.pedirOtraBodega(pedidos["sku"], pedidos["cantidad"] - warehouse.obtenerStock(pedidos["sku"]))
+					quiebre = true if rep_indv["status"] == "quiebre"
+					reporte["pedidos"] << rep_indv
+				end
+				unless quiebre
+					reporte["pedidos"].each do |rep|
+						rep.except!("status")
+						puts "reporte: #{rep}"
+						puts [rep["reserva"].to_i, rep["cantidad"].to_i].min
+						#@warehouse.realizarDespacho(rep["sku"], reporte["direccion"], rep["precio"], pedido["pedidoID"])
+						Reserve.usarReserva(pedido["rut"], rep["sku"].to_i, [rep["reserva"].to_i, rep["cantidad"].to_i].min)
+					end
+					#REPORTE MONGO: report_sales(reporte) if ENV["IN_PRODUCTION"] == "true" 	
+				else
+					#REPORTE MONGO: report_brokestock(reporte) if ENV["IN_PRODUCTION"] == "true"
+				end
+			#else
+				#REPORTE MONGO: report_wrongorder(reporte) if ENV["IN_PRODUCTION"] == "true"
+			end
+			puts "reporte final: #{reporte}"
+		end
+	end
+
+	def self.checkPedido (rut, pedidos)
+		
+		report = {}
+		report["sku"] = pedidos["sku"]
+		report["cantidad"] = pedidos["cantidad"]
+
+		stock = @warehouse.obtenerStock(pedidos["sku"])
+		res = stock == 0 ? 0 : Reserve.getReservas(pedidos["sku"].to_i) 
+		single_res = pedidos["cantidad"].to_i > stock ? 0 : Reserve.getReserva(rut, pedidos["sku"].to_i)
+
+		unless pedidos["cantidad"].to_i <=  stock - res + single_res
+			report["status"] = "quiebre"
+			#@warehouse.pedirOtraBodega(pedidos["sku"], pedidos["cantidad"] - stock) if res == 0
+			puts report
+			return report
 		end
 
-		Mongo.Report_BrokeStock(order) if ENV["IN_PRODUCTION"] == "true"
+		report["reserva"] = single_res
+
+		#report["precio"] = Pricing.getPrecio(pedidos["sku"])
+		report["status"] = "OK"
+
+		return report
 	end
 end

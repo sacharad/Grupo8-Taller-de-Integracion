@@ -25,7 +25,7 @@ class Reserve < ActiveRecord::Base
 		while conection[i,1]!=''
 			if (Date.parse(conection[i,5]))>(Date.today-7.days)
 				if conection[i,1].to_i==sku
-					numReservas=numReservas+conection[i,2].to_i-conection[i,4].to_i
+					numReservas=numReservas+conection[i,3].to_i-conection[i,4].to_i
 				end
 				#puts conection[i,1] #elementos de spreadsheet se guardan en formato string
 			end
@@ -41,8 +41,8 @@ class Reserve < ActiveRecord::Base
 		i=5
 		#puts (Date.parse(conection[i,5]))>(Date.today-7.days)
 		while conection[i,1]!=''
-			if (Date.parse(conection[i,5]))>(Date.today-7.days) and conection[i,1].to_i==sku and rutCliente==conection[i,3]
-					numReservas=numReservas+conection[i,2].to_i-conection[i,4].to_i
+			if (Date.parse(conection[i,5]))>(Date.today-7.days) and conection[i,1].to_i==sku and rutCliente==conection[i,2]
+					numReservas=numReservas+conection[i,3].to_i - conection[i,4].to_i
 				#puts conection[i,1] #elementos de spreadsheet se guardan en formato string
 			end
 		 	i=i+1
@@ -57,13 +57,13 @@ class Reserve < ActiveRecord::Base
 		#puts (Date.parse(conection[i,5]))>(Date.today-7.days)
 		while numReduce>0
 			while conection[i,1]!=''
-				if (Date.parse(conection[i,5]))>(Date.today-7.days) and conection[i,1].to_i==sku and rutCliente==conection[i,3]
-					if conection[i,2].to_i-conection[i,4].to_i>numReduce
+				if (Date.parse(conection[i,5]))>(Date.today-7.days) and conection[i,1].to_i==sku and rutCliente==conection[i,2]
+					if conection[i,3].to_i-conection[i,4].to_i>numReduce
 						conection[i,4]=conection[i,4].to_i+numReduce
 						numReduce=0
 					else 
-						numReduce=numReduce-(conection[i,2].to_i-conection[i,4].to_i)
-						conection[i,4]=conection[i,2]
+						numReduce=numReduce-(conection[i,3].to_i-conection[i,4].to_i)
+						conection[i,4]=conection[i,3]
 					end
 					#puts conection[i,1] #elementos de spreadsheet se guardan en formato string
 				end

@@ -35,7 +35,7 @@ class Order < ActiveRecord::Base
 		insert_report("Reporte_QuiebresStock",sale)
 	end
 
-	def self.report_orderwrong(order)
+	def self.report_wrongorder(order)
 		insert_report("Reporte_OrdenesIncorrectas",order)
 	end
 
