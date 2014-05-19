@@ -19,8 +19,11 @@ class Connectors::VtigerConnector
   end
 
   def getAddress(direccion_id)
-    query = URI.encode("SELECT bill_street, bill_city, bill_state FROM Contacts WHERE cf_707 = '#{direccion_id}';")
-    address = RestClient.get("#{@url}operation=query&sessionName=#{@session_id}&query=#{query}")
+    query = URI.encode("SELECT otherstreet, othercity, otherstate FROM Contacts WHERE cf_707 = '#{direccion_id}';")
+    adds = RestClient.get("#{@url}operation=query&sessionName=#{@session_id}&query=#{query}")
+
+    address = JSON.parse(adds)["result"][0]
+    return "calle: #{address["otherstreet"]} - ciudad: #{address["othercity"]} - region: #{address["otherstate"]}"
   end
 
   def checkClient(direccion_id, rut_cliente)
