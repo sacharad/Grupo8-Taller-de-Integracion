@@ -103,7 +103,7 @@ class Connectors::WarehouseConnector
 
   def get(options={})
     Rails.logger.info "Attempting to GET to #{@server_address}#{options[:path]}"
-    Rails.logger.info "With Params: "+options[:params].to_json.to_s
+    Rails.logger.info "With Params: "+options[:params].to_json.to_s unless options[:params].nil?
     response = @conn.get do |req|                           
         req.url options[:path]
         req.params = options[:params] unless options[:params].nil?
@@ -119,7 +119,7 @@ class Connectors::WarehouseConnector
 
   def post(options={})
     Rails.logger.info "Attempting to POST to #{@server_address}#{options[:path]}"
-    Rails.logger.info "With Params: "+options[:body].to_json.to_s
+    Rails.logger.info "With Params: "+options[:body].to_json.to_s unless options[:body].nil?
     response = @conn.post do |req|
         req.url options[:path]
         req.body = options[:body].to_json unless options[:body].nil?
@@ -134,10 +134,10 @@ class Connectors::WarehouseConnector
 
   def delete(options={})
     Rails.logger.info "Attempting to DELETE to #{@server_address}#{options[:path]}"
-    Rails.logger.info "With Params: "+options[:body].to_json.to_s
+    Rails.logger.info "With Params: "+options[:params].to_json.to_s unless options[:params].nil?
     response = @conn.delete do |req|
         req.url options[:path]
-        req.body = options[:body].to_json unless options[:body].nil?
+        req.params = options[:params].to_json unless options[:params].nil?
         req.headers["Authorization"] = options[:headers] unless options[:headers].nil?
       end
     if response.status < 300
@@ -204,7 +204,7 @@ class Connectors::WarehouseConnector
     options = {
       :path => "/stock",
       :headers => generate_security_header("delete", [productoId,direccion,precio,pedidoId]),
-      :body => {
+      :params => {
         :almacenId => almacenId,
         :productoId => productoId,
         :precio => precio,
