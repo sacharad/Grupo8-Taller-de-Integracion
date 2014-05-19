@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140517195033) do
+ActiveRecord::Schema.define(version: 20140518174744) do
 
   create_table "autorizacions", force: true do |t|
     t.string   "grupo"
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20140517195033) do
   end
 
   create_table "prices", force: true do |t|
-    t.string   "type"
+    t.string   "tipo"
     t.integer  "price"
     t.date     "update_date"
     t.date     "validity_date"
