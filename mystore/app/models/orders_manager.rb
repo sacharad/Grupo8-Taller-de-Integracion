@@ -3,14 +3,13 @@ class OrdersManager < ActiveRecord::Base
 ### ESTO NO ESTA LISTO, NO VA A FUNCIONAR
 
 	def self.fetchOrders
-		ftp = Connectors::FTPConnector.new
+		ftp = Connectors::SftpConnector.new
 		@vtiger = Connectors::VtigerConnector.new
+		puts "-----1"
+		ftp.getPedidosNuevos().each do |p| #asumo son pedidos nuevos/no resueltos
 
-		JSON.parse(ftp.getPedidosNuevos().to_json).each do |p| #asumo son pedidos nuevos/no resueltos
 
-			pedido = p["Pedidos"]
-
-			if @vtiger.checkClient(pedido["direccionID"], pedido["rut"])
+			 if @vtiger.checkClient(pedido["direccionID"], pedido["rut"])
 				var = true
 				pedido["Pedido"].each do |pedidos|
 					var = checkPedidos(pedido, pedidos)
