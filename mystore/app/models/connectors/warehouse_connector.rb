@@ -33,17 +33,17 @@ class Connectors::WarehouseConnector
     sku_stock
   end
   
-  def realizarDespacho(sku, direccion, precio, pedidoId) 
-    if sku.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
+  def realizarDespacho(productoId, direccion, precio, pedidoId) 
+    if productoId.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
       return false
     end
-    #-----Comienzo envío de productos a bodega externa ------
-    a = moverStock(sku, ENV["ALMACEN_DESPACHO"])
+    a = moverStock(productoId, ENV["ALMACEN_DESPACHO"])
     if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
-      b = despacharStock(sku, direccion, precio, pedidoId)
+      b = despacharStock(productoId, direccion, precio, pedidoId)
       if !b.nil? #Si hay error en despachar, pass
         return true
       else
+        moverStock(productoId, ENV["ALMACEN_LIBRE_DISPOSICION"])
         return false
       end
     else

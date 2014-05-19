@@ -52,9 +52,10 @@ class ApiController < ApplicationController
           b = warehouse_conn.moverStockBodega(producto["_id"], almacen_otro_grupo_id)
           if !b.nil? #Si hay error en despachar a otra bodega, pass
             cantidad_despachada += 1
+          else
+            warehouse_conn.moverStock(producto["_id"], ENV["ALMACEN_LIBRE_DISPOSICION"])
           end
         end
-        
       end
       render :json => [:SKU => sku.to_s, :cantidad => cantidad_despachada.to_i].to_json and return
     end
