@@ -37,18 +37,23 @@ class Connectors::WarehouseConnector
     if productoId.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
       return false
     end
-    a = moverStock(productoId, ENV["ALMACEN_DESPACHO"])
-    if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
-      b = despacharStock(productoId, direccion, precio, pedidoId)
-      if !b.nil? #Si hay error en despachar, pass
-        return true
+    if Rails.env.production?
+      a = moverStock(productoId, ENV["ALMACEN_DESPACHO"])
+      if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
+        b = despacharStock(productoId, direccion, precio, pedidoId)
+        if !b.nil? #Si hay error en despachar, pass
+          return true
+        else
+          moverStock(productoId, ENV["ALMACEN_LIBRE_DISPOSICION"])
+          return false
+        end
       else
-        moverStock(productoId, ENV["ALMACEN_LIBRE_DISPOSICION"])
         return false
       end
     else
-      return false
+      return true # Si esta en development o en test realizar un despacho es true si o si para no generar problemas de stock
     end
+    
   end
 
   def pedirOtraBodega(sku,cantidad)
