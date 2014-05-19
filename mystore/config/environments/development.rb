@@ -40,4 +40,5 @@ Mystore::Application.configure do
 
   #-----Password para comunicarse con las otras bodegas
   ENV["API_PASSWORD"] = "integramaster"
+  ENV["IN_PRODUCTION"] = "false" 
 end
