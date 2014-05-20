@@ -19,11 +19,11 @@ class ApiController < ApplicationController
     #-----Chequeo de autorización-------------------------
     if Autorizacion.find_by_grupo(grupo).nil?
       render :json => [:error => "Grupo no registra autorización o nombre de usuario incorrecto."].to_json and return
-    elsif !Autorizacion.find_by_grupo(grupo).password?
+    elsif !Autorizacion.find_by_grupo(grupo).password_in?
       render :json => [:error => "Grupo no registra contraseña."].to_json and return
     else
       autorizacion_grupo = Autorizacion.find_by_grupo(grupo)
-      password_grupo = autorizacion_grupo.password
+      password_grupo = autorizacion_grupo.password_in
       password_sha1_generado = Base64.encode64(Digest::HMAC.digest(password_grupo, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1))
       if password_sha1_recibido != password_sha1_generado
         render :json => [:error => "Contraseña incorrecta."].to_json and return

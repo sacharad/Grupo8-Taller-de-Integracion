@@ -62,46 +62,89 @@ class Connectors::WarehouseConnector
     cantidad = cantidad.to_i
 
     Autorizacion.all.each do |a|
-      cantidad_a_pedir = (cantidad_acumulada < cantidad) ? (cantidad - cantidad_acumulada) : 0
-      if cantidad_a_pedir > 0
-        warehouse_url = "http://integra"+a.grupo[a.grupo.length-1].to_s+".ing.puc.cl/"
+      if a.password_out? and a.grupo?
+        cantidad_a_pedir = (cantidad_acumulada < cantidad) ? (cantidad - cantidad_acumulada) : 0
+        if cantidad_a_pedir > 0
+          begin
+            warehouse_url = "http://integra"+a.grupo[a.grupo.length-1].to_s+".ing.puc.cl"
 
-        @conn_otra_bodega = Faraday.new(:url => warehouse_url) do |faraday|
-          faraday.request :json
-          faraday.response :logger   
-          faraday.response :json, :content_type => "application/json"               
-          faraday.adapter  Faraday.default_adapter  
+            @conn_otra_bodega = Faraday.new(:url => warehouse_url) do |faraday|
+              faraday.request :json
+              faraday.response :logger   
+              faraday.response :json, :content_type => "application/json"               
+              faraday.adapter  Faraday.default_adapter  
+            end
+            if a.grupo == "grupo9"
+              options = {
+              :path => "/api/pedirProducto/grupo8/#{a.password_out}/#{sku}",
+              :warehouse_url => warehouse_url,
+              :params => {
+                :almacenId => ENV["ALMACEN_RECEPCION"],
+                :cantidad => cantidad_a_pedir
+              }
+            }
+            elsif a.grupo == "grupo5"
+            options = {
+              :path => "/api/pedirProducto",
+              :warehouse_url => warehouse_url,
+              :params => {
+                :usuario => "grupo8",
+                :almacenId => ENV["ALMACEN_RECEPCION"],
+                :password => a.password_out,
+                :sku => sku,
+                :cantidad => cantidad_a_pedir
+              }
+            }
+            elsif a.grupo == "grupo2"
+            options = {
+              :path => "/api/pedirProducto",
+              :warehouse_url => warehouse_url,
+              :params => {
+                :usuario => "grupo8",
+                :almacen_id => ENV["ALMACEN_RECEPCION"],
+                :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
+                :SKU => sku,
+                :cantidad => cantidad_a_pedir
+              }
+            }
+            else
+            options = {
+              :path => "/api/pedirProducto",
+              :warehouse_url => warehouse_url,
+              :params => {
+                :usuario => "grupo8",
+                :almacen_id => ENV["ALMACEN_RECEPCION"],
+                :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
+                :SKU => sku,
+                :cantidad => cantidad_a_pedir
+              }
+            }
+            end
+            respuesta = get_otra_bodega(options)
+            cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
+            cantidad_acumulada += cantidad_recibida
+          rescue => e
+          end
         end
-
-        options = {
-          :path => "/api/pedirProducto",
-          :params => {
-            :usuario => a.grupo,
-            :almacen_id => ENV["ALMACEN_RECEPCION"],
-            :password => Base64.encode64(Digest::HMAC.digest(ENV["API_PASSWORD"], ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
-            :SKU => sku,
-            :cantidad => cantidad_a_pedir
-          }
-        }
-        respuesta = get_otra_bodega(options)
-        cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
-        cantidad_acumulada += cantidad_recibida
       end
     end
+
     json_response = {:cantidad_recibida => cantidad_acumulada }
     return json_response
   end
 
   def get_otra_bodega(options={})
-    Rails.logger.info "Attempting to GET to #{options[:warehouse_url]}#{options[:path]}"
-    response = @conn_otra_bodega.get do |req|                           
+    Rails.logger.info "Attempting to POST to #{options[:warehouse_url]}#{options[:path]}"
+    Rails.logger.info "With Params: #{options[:params]}"
+    Rails.logger.info @conn_otra_bodega.to_s
+    response = @conn_otra_bodega.post do |req|                           
         req.url options[:path]
-        req.params = options[:params] unless options[:params].nil?
+        req.body = options[:params] unless options[:params].nil?
     end
     if response.status < 300
       return JSON.parse response.body.to_json 
     else
-      Rails.logger.info "GET WAREHOUSE PRODUCT FAILED: "+response.body.to_s
+      Rails.logger.info "GET WAREHOUSE PRODUCT FAILED(POST): "+response.body.to_s
       return nil
     end
   end
