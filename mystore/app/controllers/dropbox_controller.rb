@@ -30,7 +30,6 @@ require 'dropbox_sdk'
 		dropbox.dropbox_token = @dropbox_session
 	    dropbox.save
 		#read_prices(DropboxSession.deserialize(@dropbox_session))
-		read_prices()
 		flash[:success] = "You have successfully authorized with dropbox."
 
 		redirect_to services_show_path

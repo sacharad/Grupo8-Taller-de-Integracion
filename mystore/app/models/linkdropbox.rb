@@ -1,7 +1,7 @@
 class Linkdropbox < ActiveRecord::Base
+	require 'dropbox_sdk'
 
-
-	def self.download_prices()    
+	def self.download_and_load_prices()    
 		      	   	    	
 				@dropbox_token = DropboxSession.deserialize(Linkdropbox.first.dropbox_token)
 				client = DropboxClient.new(@dropbox_token)
@@ -15,7 +15,8 @@ class Linkdropbox < ActiveRecord::Base
 
 	    		end 
 
-	    		Linkdropbox.import_prices_to_csv	
+	    		Linkdropbox.import_prices_to_csv
+	    		Price.set_prices
 	end
 	#This method convert accdb file to csv
 	def self.import_prices_to_csv

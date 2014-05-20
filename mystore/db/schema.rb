@@ -39,12 +39,6 @@ ActiveRecord::Schema.define(version: 20140520030545) do
     t.datetime "updated_at"
   end
 
-  create_table "dropboxes", force: true do |t|
-    t.string   "dropbox_token"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "linkdropboxes", force: true do |t|
     t.string   "dropbox_token"
     t.datetime "created_at"

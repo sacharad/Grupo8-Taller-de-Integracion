@@ -9,18 +9,17 @@ class Price < ActiveRecord::Base
 		p = consulta.first
 				
 		if(p.nil?)
-			return precio = Product.find_by_sku(sku).nomal_price
+			return precio = Product.find_by_sku(sku).normal_price
 		else 
 			return p.price
 		end
 		
 	end
 
-	#this method 
+	#this method set the prices in csv file and insert it in price model
 	def self.set_prices
 
-		lines = File.new("Data.csv").readlines
-		
+		lines = File.new("Data.csv").readlines		
 		
 		lines.each do |line|
 		    values = line.strip.split(',')
@@ -28,64 +27,91 @@ class Price < ActiveRecord::Base
 		  	#puts lines[0]
 		  	#puts values
 		  	#puts "--------"
-		  	price = Price.new
-		    value = values[0]
+		  	value = values[0]
 		    id = value[1..-2].to_i
-		    #puts id
-		    #puts value
-		    #puts "--------"
+		  	value = values[1]
+		    sku = value[1..-2].to_i
+		  	precio_actual = self.where("id = ? and sku = ?", id, sku.to_s).first
 
-		    value = values[1]
-		    sku = value[1..-2]
-		    price.sku = sku
-		    #puts sku
-		    #puts value
-		    #puts "--------"
+		  	if(precio_actual.nil?)
 
-		    value = values[2]
-		    precio = value[1..-2].to_i
-		    price.price = precio
-		    #puts precio
-		    #puts value
-		    #puts "--------"
+			  	price = Price.new
 
-		    value = values[3]
-		    value = value[1..-2].delete(" ")
-		    fecha_actual = Date.strptime(value, "%m/%d/%Y")
-		    price.update_date = fecha_actual
-		    #puts fecha_actual
-		    #puts value
-		    #puts "--------"
-		    
-		    value = values[4]
-		    value = value[1..-2].delete(" ")
-		    fecha_vigente = Date.strptime(value, "%m/%d/%Y")
-		    price.validity_date = fecha_vigente
-		    #puts fecha_vigente
-		    #puts value
-		    #puts "--------"
-		    
-		    value = values[5]
-		    costo_produccion = value[1..-2].to_i
-		    price.cost_production = costo_produccion
-		    #puts costo_produccion
-		    #puts value
-		    #puts "--------"
+			  	price.id = id
+			    price.sku = sku.to_s
+			    
+			    value = values[2]
+			    precio = value[1..-2].to_i
+			    price.price = precio
+			    
 
-		    value = values[6]
-		    costo_transp = value[1..-2].to_i
-		    price.transfer_charge = costo_transp
-		    #puts costo_transp
-		    #puts value
-		    #puts "--------"
+			    value = values[3]
+			    value = value[1..-2].delete(" ")
+			    fecha_actual = Date.strptime(value, "%m/%d/%Y")
+			    price.update_date = fecha_actual
+			    
+			    
+			    value = values[4]
+			    value = value[1..-2].delete(" ")
+			    fecha_vigente = Date.strptime(value, "%m/%d/%Y")
+			    price.validity_date = fecha_vigente
+			    
+			    
+			    value = values[5]
+			    costo_produccion = value[1..-2].to_i
+			    price.cost_production = costo_produccion
+			    
 
-		    value = values[7]
-		    costo_almacenaje = value[1..-2].to_i
-		    price.disposition_expense = costo_almacenaje
-		    #puts cost_almacenaje
-		    #puts value
-		    #puts "--------"
-		    price.save
+			    value = values[6]
+			    costo_transp = value[1..-2].to_i
+			    price.transfer_charge = costo_transp
+			    
+
+			    value = values[7]
+			    costo_almacenaje = value[1..-2].to_i
+			    price.disposition_expense = costo_almacenaje
+			    
+			    price.save
+
+			else
+
+				precio_actual.sku = sku.to_s
+			    
+
+			    value = values[2]
+			    precio = value[1..-2].to_i
+			    precio_actual.price = precio
+			    
+
+			    value = values[3]
+			    value = value[1..-2].delete(" ")
+			    fecha_actual = Date.strptime(value, "%m/%d/%Y")
+			    precio_actual.update_date = fecha_actual
+			    
+			    
+			    value = values[4]
+			    value = value[1..-2].delete(" ")
+			    fecha_vigente = Date.strptime(value, "%m/%d/%Y")
+			    precio_actual.validity_date = fecha_vigente
+			    
+			    
+			    value = values[5]
+			    costo_produccion = value[1..-2].to_i
+			    precio_actual.cost_production = costo_produccion
+			    
+
+			    value = values[6]
+			    costo_transp = value[1..-2].to_i
+			    precio_actual.transfer_charge = costo_transp
+			    
+
+			    value = values[7]
+			    costo_almacenaje = value[1..-2].to_i
+			    precio_actual.disposition_expense = costo_almacenaje
+			    
+			    precio_actual.save
+
+			end 
 		end
 
 
