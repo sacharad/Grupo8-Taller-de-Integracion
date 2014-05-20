@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140503194300) do
+ActiveRecord::Schema.define(version: 20140520002113) do
 
   create_table "clients", force: true do |t|
     t.string   "phone_number"
@@ -19,6 +19,12 @@ ActiveRecord::Schema.define(version: 20140503194300) do
     t.string   "last_name"
     t.string   "code"
     t.string   "dispatch_address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "dropboxes", force: true do |t|
+    t.string   "dropbox_token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -50,6 +56,8 @@ ActiveRecord::Schema.define(version: 20140503194300) do
     t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_production"
+    t.string   "sku"
   end
 
   create_table "products", force: true do |t|

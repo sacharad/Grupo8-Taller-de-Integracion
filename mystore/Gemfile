@@ -57,4 +57,13 @@ gem 'rest-client', '~> 1.6.7'
 gem 'dropbox-sdk'
 
 #To read microsoft access
-gem 'mdb'
+#gem 'mdb'
+
+#To use jarfile
+
+#https://paulschreiber.com/blog/2010/08/07/howto-install-the-rjb-gem-on-ubuntu-and-mac-os-x/
+#https://github.com/mguymon/lock_jar
+#gem 'rjb'
+#gem 'lock_jar'
+
+#gem 'naether'

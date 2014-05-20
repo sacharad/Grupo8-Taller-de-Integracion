@@ -124,7 +124,6 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mdb (0.3.1)
     mime-types (1.25.1)
     mini_portile (0.5.3)
     minitest (4.7.5)
@@ -272,6 +271,7 @@ GEM
       rack (>= 1.0)
 
 PLATFORMS
+  ruby
   x86-mingw32
 
 DEPENDENCIES
@@ -280,7 +280,6 @@ DEPENDENCIES
   httparty
   jbuilder (~> 1.2)
   jquery-rails
-  mdb
   money (= 6.0.1)
   rails (= 4.0.4)
   rest-client (~> 1.6.7)
