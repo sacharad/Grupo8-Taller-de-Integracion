@@ -29,7 +29,6 @@ class OrdersManager < ActiveRecord::Base
 			end
 
 			Order.report_order(pedido)
-
 			reporte = {
 				"pedidoID" => pedido["pedidoID"], 
 				"fecha" => pedido["fecha"],
