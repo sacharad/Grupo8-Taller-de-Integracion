@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20140520030545) do
   end
 
   create_table "prices", force: true do |t|
-    t.string   "tipo"
+    t.string   "type"
     t.integer  "price"
     t.date     "update_date"
     t.date     "validity_date"
