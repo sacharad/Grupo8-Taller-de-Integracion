@@ -37,7 +37,8 @@ class Connectors::WarehouseConnector
     if productoId.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
       return false
     end
-    if Rails.env.production?
+    if Rails.env.development?
+      Rails.logger.info "FUCKMYLIFE ENTRE CONCHATUMADRE"
       a = moverStock(productoId, ENV["ALMACEN_DESPACHO"])
       if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
         b = despacharStock(productoId, direccion, precio, pedidoId)
@@ -87,7 +88,7 @@ class Connectors::WarehouseConnector
         cantidad_acumulada += cantidad_recibida
       end
     end
-    json_response = {:cantidad_recibida => cantidad_recibida }
+    json_response = {:cantidad_recibida => cantidad_acumulada }
     return json_response
   end
 

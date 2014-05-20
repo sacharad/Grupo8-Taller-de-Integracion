@@ -7,9 +7,9 @@ class Connectors::SftpConnector
 
 		@sftpConn = Net::SFTP.start('integra.ing.puc.cl', 'grupo8', :password => 's3932ko')
 
-		json_pedidos_nuevos = "".to_json
+		json_pedidos_nuevos = []
 
-
+		#a = 0
 		#Si ya está en mi base de datos, ya lo procesamos
 		@sftpConn.dir.foreach("/home/grupo8/Pedidos") do |entry|
 	   		if(!OrdersSftp.exists?(:name => entry.name) && entry.name.length > 3)
@@ -23,12 +23,13 @@ class Connectors::SftpConnector
 			   	#if Date.new(fecha[0..3].to_i,fecha[5..6].to_i,fecha[8..9].to_i)<=Date.today
 		   			pedidos = hash["xml"]
 		   			pedidos["Pedidos"]["pedidoID"] = entry.name[7..-5]
-		   			json_pedidos_nuevos = json_pedidos_nuevos + pedidos.to_json.delete(' ') 
+		   			json_pedidos_nuevos.push(pedidos.to_json.delete(' ')) 
 		   			OrdersSftp.create(:name => entry.name)
 		   		end
 	   		else
 	   			puts entry.name + " exists"
 	   		end
+	   		#a == 25 ? break : a+=1
 	    end
 
 	    # direccion = "/home/grupo8/Pedidos/"
@@ -47,7 +48,12 @@ class Connectors::SftpConnector
 
 
 	   	#puts json_pedidos_nuevos 
-	   	return JSON.parse(json_pedidos_nuevos)
+			if json_pedidos_nuevos.first.nil?
+				return nil
+			else
+				return json_pedidos_nuevos
+			end
+	   	
 
 
 	end

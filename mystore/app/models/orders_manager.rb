@@ -7,16 +7,31 @@ class OrdersManager < ActiveRecord::Base
 		vtiger = Connectors::VtigerConnector.new
 		@warehouse = Connectors::WarehouseConnector.new
 
-		ftp.getPedidosNuevos().each do |p| #asumo son pedidos nuevos/no resueltos
-			
-			#pedido = p["Pedidos"]
-			pedido = p[1]
+		Rails.logger.info ftp.class
+		Rails.logger.info ftp.to_s
 
+		pedidos_ftp = ftp.getPedidosNuevos()
+		if pedidos_ftp.nil?
+			Rails.logger.info 'ERROR self.fetchOrders in OrdersManager, received nil in ftp.getPedidosNuevos() execution. line 15'
+			return nil
+		end
+
+		pedidos_ftp.each do |p| #asumo son pedidos nuevos/no resueltos
+			Rails.logger.info p.to_s
+			p = JSON.parse p
+			Rails.logger.info "1 pedido['Pedidos']"+p['Pedidos'].to_s
+			pedido = p["Pedidos"]
+			Rails.logger.info "2 pedido['Pedidos']"+pedido.to_s
+			vtiger_address = vtiger.getAddress(pedido["direccionId"])
+			if vtiger_address.nil?
+				Rails.logger.info 'ERROR self.fetchOrders in OrdersManager, received nil in vtiger.getAddress(pedido["direccionID"]) execution. line 25'
+				vtiger_address = "Direccion Invalida"
+			end
 			reporte = {
 				"pedidoID" => pedido["pedidoID"], 
 				"fecha" => pedido["fecha"],
 				"hora" => pedido["hora"],
-				"direccion" => vtiger.getAddress(pedido["direccionID"]),
+				"direccion" => vtiger_address,
 				"rut" => pedido["rut"]
 			}
 			if vtiger.checkClient(pedido["direccionID"], pedido["rut"])
@@ -24,17 +39,14 @@ class OrdersManager < ActiveRecord::Base
 
 				reporte["pedidos"] = []			
 				pedido["Pedido"].each do |pedidos|
-
 					rep_indv = checkPedido(pedido["rut"], pedidos)
-
 					quiebre = true if rep_indv["status"] == "quiebre"
 					reporte["pedidos"] << rep_indv
 				end
+				Rails.log.info "QUIEBRE: " + reporte["pedidos"].to_json
 				unless quiebre
 					reporte["pedidos"].each do |rep|
 						rep.except!("status")
-						puts "reporte: #{rep}"
-						puts [rep["reserva"].to_i, rep["cantidad"].to_i].min
 
 						productos = @warehouse.getStock(ENV["ALMACEN_LIBRE_DISPOSICION"], rep["sku"])
 						productos = productos.nil? ? 0 : productos.take(rep["cantidad"].to_i)
@@ -67,7 +79,7 @@ class OrdersManager < ActiveRecord::Base
 
 		unless pedidos["cantidad"].to_i <=  stock - res + single_res
 			report["status"] = "quiebre"
-			@warehouse.pedirOtraBodega(pedidos["sku"], pedidos["cantidad"].to_i - stock) if res == 0
+			@warehouse.pedirOtraBodega(pedidos["sku"], (pedidos["cantidad"].to_i - stock)) if res == 0
 			return report
 		end
 
