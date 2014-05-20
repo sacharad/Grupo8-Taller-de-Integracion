@@ -16,6 +16,10 @@ every 1.minute do
   runner "Product.vaciar_almacen_recepcion"
 end
 
+every :monday, :at => '6am' do
+  runner "Linkdropbox.download_and_load_prices"
+end 
+
 # every 10.minutes do
 # 	runner "OrdersManager.fetchOrders" 
 # end
