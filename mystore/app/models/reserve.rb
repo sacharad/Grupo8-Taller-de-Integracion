@@ -4,18 +4,14 @@ class Reserve < ActiveRecord::Base
 	belongs_to :product
 	
 	def self.log
-			Rails.logger.info "Starting LOG method in Reserve Model."
-			#Rails.logger.info "Whenever funciona a las #{Time.now}"
+			#Rails.logger.info "Starting LOG method in Reserve Model. #{Time.now}"
 			session= GoogleDrive.login("integra8.ing.puc@gmail.com","integra8.ing.puc.cl")
 			#Chequear que no se cambie el nombre del archivo	
 			conection=session.spreadsheet_by_title('ReservasG8').worksheets[0]
-			#session.spreadsheet_by_title('ReservasG8').export_as_file("test.html")
+			session.spreadsheet_by_title('ReservasG8').export_as_file("test.html")
 			return conection
 	end
 
-	def exportHtml
-
-	end
 
 	#Metodo que entrega cantidad de productos reservados para un tipo de producto
 	def self.getReservas(sku) 
@@ -49,7 +45,6 @@ class Reserve < ActiveRecord::Base
 		 	i=i+1
 		end
 		return numReservas
-	rescue return 0
 	end
 
 	def self.usarReserva(rutCliente, sku,amount)
@@ -73,5 +68,6 @@ class Reserve < ActiveRecord::Base
 			end
 		end
 		conection.save
+		return
 	end
 end
