@@ -104,6 +104,35 @@ class Connectors::WarehouseConnector
       return nil
     end
   end
+
+  def vaciar_almacen_recepcion()
+    Rails.logger.info "STARTING clearance of almacen de recepcion"
+    respuesta = Array.new 
+    skus_recepcion = getSkusWithStock(ENV["ALMACEN_RECEPCION"])
+    skus_recepcion.each do |sku|
+      sku_id = sku["_id"]
+      sku_total = sku["total"]
+      sku_stock = getStock(ENV["ALMACEN_RECEPCION"], sku_id)
+      total_despachado_sku = 0
+      sku_stock.each do |producto|
+        a = moverStock(producto["_id"], ENV["ALMACEN_LIBRE_DISPOSICION"])
+        if !a.nil?
+          total_despachado_sku += 1
+        else
+          Rails.logger.info "FAILURE in warehouse_connector.vaciar_almacen_recepcion() in moverStock for sku: #{sku_id}, product: #{producto["_id"]}"
+        end 
+
+        if producto == sku_stock.last
+          reporte_sku = {}
+          reporte_sku[:sku] = sku_id
+          reporte_sku[:total_enviado] = total_despachado_sku
+          reporte_sku[:total_no_enviado] = sku_total - total_despachado_sku
+          respuesta.push(reporte_sku)
+        end
+      end
+    end  
+    return respuesta  
+  end
   #---------------------------HTTP Type Methods ----------------------------------------------
 
   def get(options={})

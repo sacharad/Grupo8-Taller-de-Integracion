@@ -4,6 +4,7 @@ class Reserve < ActiveRecord::Base
 	belongs_to :product
 	
 	def self.log
+			Rails.logger.info "Starting LOG method in Reserve Model."
 			#Rails.logger.info "Whenever funciona a las #{Time.now}"
 			session= GoogleDrive.login("integra8.ing.puc@gmail.com","integra8.ing.puc.cl")
 			#Chequear que no se cambie el nombre del archivo	
