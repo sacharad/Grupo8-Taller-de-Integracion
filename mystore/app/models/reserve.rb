@@ -49,6 +49,7 @@ class Reserve < ActiveRecord::Base
 		 	i=i+1
 		end
 		return numReservas
+	rescue return 0
 	end
 
 	def self.usarReserva(rutCliente, sku,amount)
