@@ -38,8 +38,7 @@ class Connectors::WarehouseConnector
     if productoId.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
       return false
     end
-    if Rails.env.development?
-      Rails.logger.info "FUCKMYLIFE ENTRE CONCHATUMADRE"
+    if Rails.env.production?
       a = moverStock(productoId, ENV["ALMACEN_DESPACHO"])
       if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
         b = despacharStock(productoId, direccion, precio.to_i, pedidoId)
@@ -180,7 +179,7 @@ class Connectors::WarehouseConnector
     else
       Rails.logger.info "DELETE FAILED: "+response.body.to_s
       Rails.logger.info "DELETE FAILED: "+response.status.to_s
-      return response
+      return nil
     end  
   end
   def delete_rc(options={})
@@ -191,7 +190,7 @@ class Connectors::WarehouseConnector
     response = JSON.parse response
     return response
     rescue => e
-      return JSON.parse e.response
+      return nil
     end
   end
 
