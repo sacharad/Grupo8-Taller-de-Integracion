@@ -33,22 +33,27 @@ class Connectors::WarehouseConnector
     sku_stock
   end
   
-  def realizarDespacho(sku, direccion, precio, pedidoId) 
-    if sku.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
+  def realizarDespacho(productoId, direccion, precio, pedidoId) 
+    if productoId.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
       return false
     end
-    #-----Comienzo envío de productos a bodega externa ------
-    a = moverStock(sku, ENV["ALMACEN_DESPACHO"])
-    if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
-      b = despacharStock(sku, direccion, precio, pedidoId)
-      if !b.nil? #Si hay error en despachar, pass
-        return true
+    if Rails.env.production?
+      a = moverStock(productoId, ENV["ALMACEN_DESPACHO"])
+      if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
+        b = despacharStock(productoId, direccion, precio, pedidoId)
+        if !b.nil? #Si hay error en despachar, pass
+          return true
+        else
+          moverStock(productoId, ENV["ALMACEN_LIBRE_DISPOSICION"])
+          return false
+        end
       else
         return false
       end
     else
-      return false
+      return true # Si esta en development o en test realizar un despacho es true si o si para no generar problemas de stock
     end
+    
   end
 
   def pedirOtraBodega(sku,cantidad)
@@ -103,6 +108,7 @@ class Connectors::WarehouseConnector
 
   def get(options={})
     Rails.logger.info "Attempting to GET to #{@server_address}#{options[:path]}"
+    Rails.logger.info "With Params: "+options[:params].to_json.to_s unless options[:params].nil?
     response = @conn.get do |req|                           
         req.url options[:path]
         req.params = options[:params] unless options[:params].nil?
@@ -117,7 +123,8 @@ class Connectors::WarehouseConnector
   end
 
   def post(options={})
-    Rails.logger.info "Attempting to POST to #{@server_address}#{:path}"
+    Rails.logger.info "Attempting to POST to #{@server_address}#{options[:path]}"
+    Rails.logger.info "With Params: "+options[:body].to_json.to_s unless options[:body].nil?
     response = @conn.post do |req|
         req.url options[:path]
         req.body = options[:body].to_json unless options[:body].nil?
@@ -131,10 +138,11 @@ class Connectors::WarehouseConnector
     end  end
 
   def delete(options={})
-    Rails.logger.info "Attempting to DELETE to #{@server_address}#{:path}"
+    Rails.logger.info "Attempting to DELETE to #{@server_address}#{options[:path]}"
+    Rails.logger.info "With Params: "+options[:params].to_json.to_s unless options[:params].nil?
     response = @conn.delete do |req|
         req.url options[:path]
-        req.body = options[:body].to_json unless options[:body].nil?
+        req.params = options[:params].to_json unless options[:params].nil?
         req.headers["Authorization"] = options[:headers] unless options[:headers].nil?
       end
     if response.status < 300
@@ -179,7 +187,7 @@ class Connectors::WarehouseConnector
     options = {
       :path => "/moveStock",
       :headers => generate_security_header("post", [productoId,almacenId]),
-      :params => {
+      :body => {
         :almacenId => almacenId,
         :productoId => productoId
       }
@@ -190,7 +198,7 @@ class Connectors::WarehouseConnector
     options = {
       :path => "/moveStockBodega",
       :headers => generate_security_header("post", [productoId,almacenId]),
-      :params => {
+      :body => {
         :almacenId => almacenId,
         :productoId => productoId
       }

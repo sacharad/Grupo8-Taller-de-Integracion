@@ -9,7 +9,7 @@ Mystore::Application.routes.draw do
 
 
   match '/api_test', to: 'api_test#index', via: 'get'
-  root :to => 'home#index' 
+  root :to => 'home#index'
   resources :storehouses
   resources :prices
   resources :reserves
