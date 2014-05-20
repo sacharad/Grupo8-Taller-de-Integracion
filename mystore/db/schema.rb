@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140517195033) do
+ActiveRecord::Schema.define(version: 20140519230429) do
 
   create_table "autorizacions", force: true do |t|
     t.string   "grupo"
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20140517195033) do
   end
 
   create_table "prices", force: true do |t|
-    t.string   "type"
+    t.string   "tipo"
     t.integer  "price"
     t.date     "update_date"
     t.date     "validity_date"
@@ -86,6 +86,8 @@ ActiveRecord::Schema.define(version: 20140517195033) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "model"
+    t.integer  "normal_price"
+    t.integer  "internet_price"
   end
 
   create_table "products_storehouses", force: true do |t|
@@ -104,6 +106,7 @@ ActiveRecord::Schema.define(version: 20140517195033) do
     t.datetime "updated_at"
     t.string   "client_id"
     t.string   "responsible"
+    t.integer  "ammount_used"
   end
 
   create_table "sftp_connectors", force: true do |t|
