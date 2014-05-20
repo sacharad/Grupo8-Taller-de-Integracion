@@ -9,7 +9,6 @@ class Connectors::SftpConnector
 
 		json_pedidos_nuevos = []
 
-		#a = 0
 		#Si ya está en mi base de datos, ya lo procesamos
 		@sftpConn.dir.foreach("/home/grupo8/Pedidos") do |entry|
 	   		if(!OrdersSftp.exists?(:name => entry.name) && entry.name.length > 3)
@@ -19,7 +18,7 @@ class Connectors::SftpConnector
 	   			hash = JSON.parse(data_json)
 			   	fecha = hash["xml"]["Pedidos"]["fecha"][1]
 
-			   	if Date.new(fecha[0..3].to_i,fecha[5..6].to_i,fecha[8..9].to_i)==Date.today
+			   	if Date.new(fecha[0..3].to_i,fecha[5..6].to_i,fecha[8..9].to_i)<=Date.today
 			   	#if Date.new(fecha[0..3].to_i,fecha[5..6].to_i,fecha[8..9].to_i)<=Date.today
 		   			pedidos = hash["xml"]
 		   			pedidos["Pedidos"]["pedidoID"] = entry.name[7..-5]
@@ -29,7 +28,6 @@ class Connectors::SftpConnector
 	   		else
 	   			puts entry.name + " exists"
 	   		end
-	   		#a == 25 ? break : a+=1
 	    end
 
 	    # direccion = "/home/grupo8/Pedidos/"

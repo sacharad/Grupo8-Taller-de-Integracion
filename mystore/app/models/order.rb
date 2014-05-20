@@ -26,13 +26,13 @@ class Order < ActiveRecord::Base
 
 	#example sale: {"rut" =>"151234560", "fecha" => "13/06/2014", "hora" => "10:01", "precio_venta" => "52000", "producto" => {"sku" => "SKU45123", "cantidad" => 10}}
 	def self.report_sales(sale)
-		insert_report("Reporte_Ventas",sale)
+		insert_report("Reporte_Ventas", sale)
 		
 	end
 
 	#example info: {"fecha" => "12/03/2013", "hora" => "16:00", "rut" =>"171234560", "producto" => {"sku" => "US123", "cantidad" => 3}}
 	def self.report_brokestock(quiebre)
-		insert_report("Reporte_QuiebresStock",sale)
+		insert_report("Reporte_QuiebresStock", quiebre)
 	end
 
 	def self.report_wrongorder(order)

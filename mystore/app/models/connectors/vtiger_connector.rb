@@ -47,7 +47,7 @@ class Connectors::VtigerConnector
     end
 
     address = adds["result"][0]
-    return "calle: #{address["otherstreet"]} - ciudad: #{address["othercity"]} - region: #{address["otherstate"]}"
+    return "#{address["otherstreet"]}, #{address["othercity"]}, #{address["otherstate"]}"
   end
 
   def checkClient(direccion_id, rut_cliente)

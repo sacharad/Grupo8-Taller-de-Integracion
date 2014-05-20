@@ -27,6 +27,9 @@ class OrdersManager < ActiveRecord::Base
 				Rails.logger.info 'ERROR self.fetchOrders in OrdersManager, received nil in vtiger.getAddress(pedido["direccionID"]) execution. line 25'
 				vtiger_address = "Direccion Invalida"
 			end
+
+			Order.report_order(pedido)
+
 			reporte = {
 				"pedidoID" => pedido["pedidoID"], 
 				"fecha" => pedido["fecha"],
@@ -43,25 +46,24 @@ class OrdersManager < ActiveRecord::Base
 					quiebre = true if rep_indv["status"] == "quiebre"
 					reporte["pedidos"] << rep_indv
 				end
-				Rails.log.info "QUIEBRE: " + reporte["pedidos"].to_json
 				unless quiebre
 					reporte["pedidos"].each do |rep|
 						rep.except!("status")
 
 						productos = @warehouse.getStock(ENV["ALMACEN_LIBRE_DISPOSICION"], rep["sku"])
 						productos = productos.nil? ? 0 : productos.take(rep["cantidad"].to_i)
+
 						productos.each do |producto|
-							puts @warehouse.realizarDespacho(producto["_id"], reporte["direccion"], rep["precio"], pedido["pedidoID"])
-							#if !a.nil?
+							#@warehouse.realizarDespacho(producto["_id"], reporte["direccion"], rep["precio"].to_i, pedido["pedidoID"])
 						end
 						Reserve.usarReserva(pedido["rut"], rep["sku"].to_i, [rep["reserva"].to_i, rep["cantidad"].to_i].min)
 					end
-					Order.report_sales(reporte) if ENV["IN_PRODUCTION"] == "true" 	
+					Order.report_sales(reporte)	
 				else
-					Order.report_brokestock(reporte) if ENV["IN_PRODUCTION"] == "true"
+					Order.report_brokestock(reporte)
 				end
 			else
-				Order.report_wrongorder(reporte) if ENV["IN_PRODUCTION"] == "true"
+				Order.report_wrongorder(reporte)
 			end
 			puts "reporte final: #{reporte}"
 		end
@@ -75,6 +77,7 @@ class OrdersManager < ActiveRecord::Base
 
 		stock = @warehouse.obtenerStock(pedidos["sku"])
 		res = stock == 0 ? 0 : Reserve.getReservas(pedidos["sku"].to_i) 
+		r = Reserve.getReserva(rut, pedidos["sku"].to_i)
 		single_res = pedidos["cantidad"].to_i > stock ? 0 : Reserve.getReserva(rut, pedidos["sku"].to_i)
 
 		unless pedidos["cantidad"].to_i <=  stock - res + single_res
@@ -88,6 +91,8 @@ class OrdersManager < ActiveRecord::Base
 		report["precio"] = Price.get_prices(pedidos["sku"])
 		report["status"] = "OK"
 
+
 		return report
+	
 	end
 end
