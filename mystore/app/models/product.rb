@@ -28,5 +28,35 @@ class Product < ActiveRecord::Base
 			producto.save
 		end
 	end	
+	def self.vaciar_almacen_recepcion
+		puts "STARTING clearance of almacen de recepcion"
+    Rails.logger.info "STARTING clearance of almacen de recepcion"
+    conn = Connectors::WarehouseConnector.new
+    respuesta = Array.new 
+    skus_recepcion = conn.getSkusWithStock(ENV["ALMACEN_RECEPCION"])
+    skus_recepcion.each do |sku|
+      sku_id = sku["_id"]
+      sku_total = sku["total"]
+      sku_stock = conn.getStock(ENV["ALMACEN_RECEPCION"], sku_id)
+      total_despachado_sku = 0
+      sku_stock.each do |producto|
+        a = conn.moverStock(producto["_id"], ENV["ALMACEN_LIBRE_DISPOSICION"])
+        if !a.nil?
+          total_despachado_sku += 1
+        else
+          Rails.logger.info "FAILURE in warehouse_connector.vaciar_almacen_recepcion() in moverStock for sku: #{sku_id}, product: #{producto["_id"]}"
+        end 
+
+        if producto == sku_stock.last
+          reporte_sku = {}
+          reporte_sku[:sku] = sku_id
+          reporte_sku[:total_enviado] = total_despachado_sku
+          reporte_sku[:total_no_enviado] = sku_total - total_despachado_sku
+          respuesta.push(reporte_sku)
+        end
+      end
+    end  
+    return respuesta  
+  end
 
 end

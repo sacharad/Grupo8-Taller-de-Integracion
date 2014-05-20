@@ -10,7 +10,10 @@
 
 #ejecuta metodo que lee reserva en spreadsheet y la ingresa a base de datos
 every 1.minute do
-	runner "Reserve.log" 
+  runner "Reserve.log" 
+end
+every 1.minute do
+  runner "Product.vaciar_almacen_recepcion"
 end
 
 # every 10.minutes do
