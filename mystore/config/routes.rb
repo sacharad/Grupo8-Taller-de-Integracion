@@ -10,9 +10,7 @@ Mystore::Application.routes.draw do
     #Dropbox Routes
   get '/dropbox/authorize'   => 'dropbox#authorize' , :method => :get , :as => :pricing_auth
   get '/dropbox/callback' => 'dropbox#callback' , :method => :get , :as =>  :pricing_callback
-  get '/dropbox/read_prices'   => 'dropbox#read_prices' , :method => :get , :as => :read_prices
-
-
+  
   match '/api_test', to: 'api_test#index', via: 'get'
   root :to => 'home#index'
   resources :storehouses

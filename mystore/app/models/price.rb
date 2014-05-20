@@ -3,7 +3,7 @@ class Price < ActiveRecord::Base
 	require 'csv'
 	belongs_to :product
 
-	def get_prices(sku)
+	def self.get_prices(sku)
 
 		consulta = self.where("validity_date >= ? and update_date <= ? and sku = ?", Date.today, Date.today, sku)
 		p = consulta.first
@@ -15,15 +15,6 @@ class Price < ActiveRecord::Base
 		end
 		
 	end
-
-	#This method convert accdb file to csv
-	def self.import_prices_to_csv
-		 cmd = "java -jar ./public/jars/AccessReader.jar" 
- 			`#{cmd}`
-	end 
-
-	#http://erikonrails.snowedin.net/?p=212
-
 
 	#this method 
 	def self.set_prices
