@@ -1,4 +1,5 @@
 class Price < ActiveRecord::Base
+
 	require 'csv'
 	belongs_to :product
 
@@ -22,6 +23,7 @@ class Price < ActiveRecord::Base
 	end 
 
 	#http://erikonrails.snowedin.net/?p=212
+
 
 	#this method 
 	def self.set_prices

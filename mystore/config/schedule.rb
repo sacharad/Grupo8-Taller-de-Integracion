@@ -1,7 +1,21 @@
+
 # Use this file to easily define all of your cron jobs.
 #
 # It's helpful, but not entirely necessary to understand cron before proceeding.
 # http://en.wikipedia.org/wiki/Cron
+
+
+
+
+
+#ejecuta metodo que lee reserva en spreadsheet y la ingresa a base de datos
+every 1.minute do
+	runner "Reserve.log" 
+end
+
+# every 10.minutes do
+# 	runner "OrdersManager.fetchOrders" 
+# end
 
 # Example:
 #
@@ -18,3 +32,4 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+

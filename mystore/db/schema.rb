@@ -13,6 +13,22 @@
 
 ActiveRecord::Schema.define(version: 20140520002113) do
 
+  create_table "autorizacions", force: true do |t|
+    t.string   "grupo"
+    t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "categories", force: true do |t|
+    t.string   "name"
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "categories", ["product_id"], name: "index_categories_on_product_id"
+
   create_table "clients", force: true do |t|
     t.string   "phone_number"
     t.string   "first_name"
@@ -46,8 +62,19 @@ ActiveRecord::Schema.define(version: 20140520002113) do
     t.datetime "updated_at"
   end
 
+  create_table "orders_managers", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "orders_sftps", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "prices", force: true do |t|
-    t.string   "type"
+    t.string   "tipo"
     t.integer  "price"
     t.date     "update_date"
     t.date     "validity_date"
@@ -71,6 +98,9 @@ ActiveRecord::Schema.define(version: 20140520002113) do
     t.string   "brand"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "model"
+    t.integer  "normal_price"
+    t.integer  "internet_price"
   end
 
   create_table "products_storehouses", force: true do |t|
@@ -81,11 +111,18 @@ ActiveRecord::Schema.define(version: 20140520002113) do
   end
 
   create_table "reserves", force: true do |t|
-    t.string   "unit"
+    t.string   "sku"
     t.integer  "amount"
     t.date     "date"
-    t.integer  "client_id"
     t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "client_id"
+    t.string   "responsible"
+    t.integer  "ammount_used"
+  end
+
+  create_table "sftp_connectors", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
