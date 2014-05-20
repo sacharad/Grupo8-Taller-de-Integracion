@@ -32,7 +32,7 @@ class Order < ActiveRecord::Base
 
 	#example info: {"fecha" => "12/03/2013", "hora" => "16:00", "rut" =>"171234560", "producto" => {"sku" => "US123", "cantidad" => 3}}
 	def self.report_brokestock(quiebre)
-		insert_report("Reporte_QuiebresStock",sale)
+		insert_report("Reporte_QuiebresStock",quiebre)
 	end
 
 	def self.report_wrongorder(order)

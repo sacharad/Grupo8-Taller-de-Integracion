@@ -1,1 +1,22 @@
 <h1>Dashboard</h1>
+
+
+ <table class="table table-hover">
+ 	<thead>
+	  <th><h4>KPI</h4></th>
+	  <th><h4>Porcentaje</h4></th>
+	</tr>
+	</thead>
+	<tbody>
+	  <th><h5>Quiebre Stock/TotalPedidos</h5></th>
+	  <th><h5><%= @quiebres/@pedidos %></h5></th>
+	</tbody>
+	<tbody>
+	  <th><h5>Ventas/TotalPedidos</h5></th>
+	  <th><h5><%= @ventas/@pedidos %></h5></th>
+	</tbody>
+	<tbody>
+	  <th><h5>Incorrectos/TotalPedidos</h5></th>
+	  <th><h5><%= @pedidos_incorrectos/@pedidos%></h5></th>
+	</tbody>
+</table> 
