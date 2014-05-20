@@ -1,0 +1,11 @@
+class Client < ActiveRecord::Base
+
+	has_many :orders, dependent: :destroy
+	has_many :reserves, dependent: :destroy
+
+	def self.archivo
+		cmd = "java -jar simplejava.jar"
+      		`#{cmd}`
+	end
+	
+end
