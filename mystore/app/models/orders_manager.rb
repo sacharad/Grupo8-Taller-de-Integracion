@@ -8,7 +8,7 @@ class OrdersManager < ActiveRecord::Base
 		@warehouse = Connectors::WarehouseConnector.new
 
 		ftp.getPedidosNuevos().each do |p| #asumo son pedidos nuevos/no resueltos
-			#UBUNTU - CAMBIAR ESTO POR: 
+			
 			#pedido = p["Pedidos"]
 			pedido = p[1]
 
@@ -35,15 +35,21 @@ class OrdersManager < ActiveRecord::Base
 						rep.except!("status")
 						puts "reporte: #{rep}"
 						puts [rep["reserva"].to_i, rep["cantidad"].to_i].min
-						#@warehouse.realizarDespacho(rep["sku"], reporte["direccion"], rep["precio"], pedido["pedidoID"])
+
+						productos = @warehouse.getStock(ENV["ALMACEN_LIBRE_DISPOSICION"], rep["sku"])
+						productos = productos.nil? ? 0 : productos.take(rep["cantidad"].to_i)
+						productos.each do |producto|
+							puts @warehouse.realizarDespacho(producto["_id"], reporte["direccion"], rep["precio"], pedido["pedidoID"])
+							#if !a.nil?
+						end
 						Reserve.usarReserva(pedido["rut"], rep["sku"].to_i, [rep["reserva"].to_i, rep["cantidad"].to_i].min)
 					end
-					#REPORTE MONGO: report_sales(reporte) if ENV["IN_PRODUCTION"] == "true" 	
+					Order.report_sales(reporte) if ENV["IN_PRODUCTION"] == "true" 	
 				else
-					#REPORTE MONGO: report_brokestock(reporte) if ENV["IN_PRODUCTION"] == "true"
+					Order.report_brokestock(reporte) if ENV["IN_PRODUCTION"] == "true"
 				end
-			#else
-				#REPORTE MONGO: report_wrongorder(reporte) if ENV["IN_PRODUCTION"] == "true"
+			else
+				Order.report_wrongorder(reporte) if ENV["IN_PRODUCTION"] == "true"
 			end
 			puts "reporte final: #{reporte}"
 		end
@@ -61,14 +67,13 @@ class OrdersManager < ActiveRecord::Base
 
 		unless pedidos["cantidad"].to_i <=  stock - res + single_res
 			report["status"] = "quiebre"
-			#@warehouse.pedirOtraBodega(pedidos["sku"], pedidos["cantidad"] - stock) if res == 0
-			puts report
+			@warehouse.pedirOtraBodega(pedidos["sku"], pedidos["cantidad"].to_i - stock) if res == 0
 			return report
 		end
 
 		report["reserva"] = single_res
 
-		#report["precio"] = Pricing.getPrecio(pedidos["sku"])
+		report["precio"] = Price.get_prices(pedidos["sku"])
 		report["status"] = "OK"
 
 		return report

@@ -4,7 +4,7 @@ class Connectors::SftpConnector
 	end
 
 	def getPedidosNuevos
-		
+
 		@sftpConn = Net::SFTP.start('integra.ing.puc.cl', 'grupo8', :password => 's3932ko')
 
 		json_pedidos_nuevos = "".to_json
