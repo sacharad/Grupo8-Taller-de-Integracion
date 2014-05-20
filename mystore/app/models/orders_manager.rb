@@ -54,7 +54,7 @@ class OrdersManager < ActiveRecord::Base
 						productos = productos.nil? ? 0 : productos.take(rep["cantidad"].to_i)
 
 						productos.each do |producto|
-							#@warehouse.realizarDespacho(producto["_id"], reporte["direccion"], rep["precio"].to_i, pedido["pedidoID"])
+							@warehouse.realizarDespacho(producto["_id"], reporte["direccion"], rep["precio"].to_i, pedido["pedidoID"])
 						end
 						Reserve.usarReserva(pedido["rut"], rep["sku"].to_i, [rep["reserva"].to_i, rep["cantidad"].to_i].min)
 					end

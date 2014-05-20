@@ -2,6 +2,7 @@ class Connectors::WarehouseConnector
   class InvalidConfigurationException < Exception
   end
   require 'uri'
+  require 'rest_client'
   def initialize()
     @server_address = ENV["WAREHOUSE_ADDRESS"]
     @conn = Faraday.new(:url => @server_address) do |faraday|
@@ -170,19 +171,31 @@ class Connectors::WarehouseConnector
   def delete(options={})
     Rails.logger.info "Attempting to DELETE to #{@server_address}#{options[:path]}"
     Rails.logger.info "With Params: "+options[:params].to_json.to_s unless options[:params].nil?
-    response = @conn.delete do |req|
-        req.url options[:path]
-        req.params = options[:params] unless options[:params].nil?
-        req.headers["Authorization"] = options[:headers] unless options[:headers].nil?
+    response = @conn.delete options[:path] do |req|
+        req.params = options[:params]
+        req.headers["Authorization"] = options[:headers]
       end
     if response.status < 300
       return JSON.parse response.body.to_json 
     else
       Rails.logger.info "DELETE FAILED: "+response.body.to_s
       Rails.logger.info "DELETE FAILED: "+response.status.to_s
-      return nil
+      return response
     end  
   end
+  def delete_rc(options={})
+    Rails.logger.info "Attempting to DELETE to #{@server_address}#{options[:path]}"
+    Rails.logger.info "With Params: "+options[:params].to_json.to_s unless options[:params].nil?
+    begin
+    response=RestClient::Request.execute(:method => 'delete', :url => "http://bodega-integracion-2014.herokuapp.com/stock",:headers =>{:Authorization => options[:headers]}, :payload =>options[:params])
+    response = JSON.parse response
+    return response
+    rescue => e
+      return JSON.parse e.response
+    end
+  end
+
+
   #-----------------------------Api Call Options Methods---------------------------------------------------
 
   def getAlmacenes()
@@ -242,13 +255,13 @@ class Connectors::WarehouseConnector
       :path => "/stock",
       :headers => generate_security_header("delete", [productoId,direccion,precio,pedidoId]),
       :params => {
+        :precio => precio,
         :direccion => direccion,
         :productoId => productoId,
-        :precio => precio,
         :pedidoId => pedidoId
       }
     }
-    delete options
+    delete_rc options
   end
   #----------------------------Helper Methods------------------------------------------------------------------------
   def generate_security_header(http_method, params={})
