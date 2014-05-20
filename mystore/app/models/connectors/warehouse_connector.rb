@@ -1,7 +1,7 @@
 class Connectors::WarehouseConnector
   class InvalidConfigurationException < Exception
   end
-
+  require 'uri'
   def initialize()
     @server_address = ENV["WAREHOUSE_ADDRESS"]
     @conn = Faraday.new(:url => @server_address) do |faraday|
@@ -37,10 +37,11 @@ class Connectors::WarehouseConnector
     if productoId.nil? or direccion.nil? or precio.nil? or pedidoId.nil?
       return false
     end
-    if Rails.env.production?
+    if Rails.env.development?
+      Rails.logger.info "FUCKMYLIFE ENTRE CONCHATUMADRE"
       a = moverStock(productoId, ENV["ALMACEN_DESPACHO"])
       if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
-        b = despacharStock(productoId, direccion, precio, pedidoId)
+        b = despacharStock(productoId, direccion, precio.to_i, pedidoId)
         if !b.nil? #Si hay error en despachar, pass
           return true
         else
@@ -87,7 +88,7 @@ class Connectors::WarehouseConnector
         cantidad_acumulada += cantidad_recibida
       end
     end
-    json_response = {:cantidad_recibida => cantidad_recibida }
+    json_response = {:cantidad_recibida => cantidad_acumulada }
     return json_response
   end
 
@@ -171,15 +172,17 @@ class Connectors::WarehouseConnector
     Rails.logger.info "With Params: "+options[:params].to_json.to_s unless options[:params].nil?
     response = @conn.delete do |req|
         req.url options[:path]
-        req.params = options[:params].to_json unless options[:params].nil?
+        req.params = options[:params] unless options[:params].nil?
         req.headers["Authorization"] = options[:headers] unless options[:headers].nil?
       end
     if response.status < 300
       return JSON.parse response.body.to_json 
     else
       Rails.logger.info "DELETE FAILED: "+response.body.to_s
+      Rails.logger.info "DELETE FAILED: "+response.status.to_s
       return nil
-    end  end
+    end  
+  end
   #-----------------------------Api Call Options Methods---------------------------------------------------
 
   def getAlmacenes()
@@ -239,7 +242,7 @@ class Connectors::WarehouseConnector
       :path => "/stock",
       :headers => generate_security_header("delete", [productoId,direccion,precio,pedidoId]),
       :params => {
-        :almacenId => almacenId,
+        :direccion => direccion,
         :productoId => productoId,
         :precio => precio,
         :pedidoId => pedidoId
