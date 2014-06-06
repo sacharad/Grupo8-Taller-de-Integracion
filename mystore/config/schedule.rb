@@ -14,17 +14,17 @@ every 1.minute do
   runner 'Reserve.log' , :environment => 'development'
   runner 'Reserve.log', :environment => 'production' 
 end
-# every 1.minute do
-#   runner "Product.vaciar_almacen_recepcion"
-# end
+ every 10.minute do
+   runner "Product.vaciar_almacen_recepcion"
+ end
 
 every :monday, :at => '6am' do
   runner "Linkdropbox.download_and_load_prices"
 end 
 
-# every 10.minutes do
-# 	runner "OrdersManager.fetchOrders" 
-# end
+every 10.minutes do
+ 	runner "OrdersManager.fetchOrders" 
+end
 
 # Example:
 #
