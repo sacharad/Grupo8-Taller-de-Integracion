@@ -318,5 +318,6 @@ class Connectors::WarehouseConnector
     complete_header = "UC grupo8:"+encoded_header
     Rails.logger.info "Complete Header: "+complete_header
     complete_header
-  end  
+  end    
+
 end

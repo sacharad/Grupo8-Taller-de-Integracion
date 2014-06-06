@@ -29,7 +29,6 @@ class Product < ActiveRecord::Base
 		end
 	end	
 	def self.vaciar_almacen_recepcion
-		puts "STARTING clearance of almacen de recepcion"
     Rails.logger.info "STARTING clearance of almacen de recepcion"
     conn = Connectors::WarehouseConnector.new
     respuesta = Array.new 
@@ -57,6 +56,39 @@ class Product < ActiveRecord::Base
       end
     end  
     return respuesta  
+  end
+
+  #-----------------------------Actualization of Almacenes ---------------------------------------------------------
+
+  def self.actualizarAlmacenes
+    Rails.logger.info "STARTING actualizacion de almacenes en la BD"
+    conn = Connectors::WarehouseConnector.new
+    Almacen.destroy_all
+    almacenes = conn.getAlmacenes()
+    almacenes_a_guardar = []
+    capacidad_general = 0
+    almacenes.each do |almacen|
+      almacen_id =  almacen["_id"]
+      if almacen["pulmon"] == false and almacen["despacho"] == false and almacen["recepcion"] == false
+        if almacen["totalSpace"].to_i > capacidad_general
+          capacidad_general = almacen["totalSpace"].to_i
+          almacenes_a_guardar.clear
+          almacenes_a_guardar.push(almacen)
+        end
+      elsif almacen["pulmon"] == true and almacen["despacho"] == false and almacen["recepcion"] == false
+        Almacen.create(:name => "pulmon", :almacen_id => almacen_id)
+      elsif almacen["pulmon"] == false and almacen["despacho"] == true and almacen["recepcion"] == false
+        Almacen.create(:name => "despacho", :almacen_id => almacen_id)
+      elsif almacen["pulmon"] == false and almacen["despacho"] == false and almacen["recepcion"] == true
+        Almacen.create(:name => "recepcion", :almacen_id => almacen_id)
+      end
+    end
+    almacenes_a_guardar.each do |almacen|
+      puts almacen
+      Almacen.create(:name => "general", :almacen_id => almacen["_id"])
+    end
+
+
   end
 
 end
