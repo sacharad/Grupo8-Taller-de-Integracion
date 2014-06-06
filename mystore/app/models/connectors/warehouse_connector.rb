@@ -39,13 +39,13 @@ class Connectors::WarehouseConnector
       return false
     end
     if Rails.env.production?
-      a = moverStock(productoId, ENV["ALMACEN_DESPACHO"])
+      a = moverStock(productoId, Almacen.buscar("despacho")["almacen_id"])
       if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
         b = despacharStock(productoId, direccion, precio.to_i, pedidoId)
         if !b.nil? #Si hay error en despachar, pass
           return true
         else
-          moverStock(productoId, ENV["ALMACEN_LIBRE_DISPOSICION"])
+          moverStock(productoId, Almacen.buscar("general")["almacen_id"])
           return false
         end
       else
@@ -79,7 +79,7 @@ class Connectors::WarehouseConnector
               :path => "/api/pedirProducto/grupo8/#{a.password_out}/#{sku}",
               :warehouse_url => warehouse_url,
               :params => {
-                :almacenId => ENV["ALMACEN_RECEPCION"],
+                :almacenId => Almacen.buscar("recepcion")["almacen_id"],
                 :cantidad => cantidad_a_pedir
               }
             }
@@ -89,7 +89,7 @@ class Connectors::WarehouseConnector
               :warehouse_url => warehouse_url,
               :params => {
                 :usuario => "grupo8",
-                :almacenId => ENV["ALMACEN_RECEPCION"],
+                :almacenId => Almacen.buscar("recepcion")["almacen_id"],
                 :password => a.password_out,
                 :sku => sku,
                 :cantidad => cantidad_a_pedir
@@ -101,7 +101,7 @@ class Connectors::WarehouseConnector
               :warehouse_url => warehouse_url,
               :params => {
                 :usuario => "grupo8",
-                :almacen_id => ENV["ALMACEN_RECEPCION"],
+                :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
                 :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
                 :SKU => sku,
                 :cantidad => cantidad_a_pedir
@@ -113,7 +113,7 @@ class Connectors::WarehouseConnector
               :warehouse_url => warehouse_url,
               :params => {
                 :usuario => "grupo8",
-                :almacen_id => ENV["ALMACEN_RECEPCION"],
+                :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
                 :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
                 :SKU => sku,
                 :cantidad => cantidad_a_pedir
@@ -152,14 +152,14 @@ class Connectors::WarehouseConnector
   def vaciar_almacen_recepcion()
     Rails.logger.info "STARTING clearance of almacen de recepcion"
     respuesta = Array.new 
-    skus_recepcion = getSkusWithStock(ENV["ALMACEN_RECEPCION"])
+    skus_recepcion = getSkusWithStock(Almacen.buscar("recepcion")["almacen_id"])
     skus_recepcion.each do |sku|
       sku_id = sku["_id"]
       sku_total = sku["total"]
-      sku_stock = getStock(ENV["ALMACEN_RECEPCION"], sku_id)
+      sku_stock = getStock(Almacen.buscar("recepcion")["almacen_id"], sku_id)
       total_despachado_sku = 0
       sku_stock.each do |producto|
-        a = moverStock(producto["_id"], ENV["ALMACEN_LIBRE_DISPOSICION"])
+        a = moverStock(producto["_id"], Almacen.buscar("general")["almacen_id"])
         if !a.nil?
           total_despachado_sku += 1
         else
