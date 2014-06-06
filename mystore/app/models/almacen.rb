@@ -5,6 +5,12 @@ class Almacen < ActiveRecord::Base
   # => despacho
   # => recepcion
   def self.buscar(almacen_name)
-    Almacen.find_by_name(almacen_name)
+    a = Almacen.find_by_name(almacen_name)
+    if a.nil?
+      Product.actualizarAlmacenes
+      a = Almacen.find_by_name(almacen_name)
+    end
+    a
   end
+
 end

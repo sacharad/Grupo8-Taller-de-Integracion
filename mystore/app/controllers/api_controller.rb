@@ -44,16 +44,16 @@ class ApiController < ApplicationController
     else
       cantidad_despachada = 0
       cantidad_a_despachar = stock_consolidado >= cantidad ? cantidad : stock_consolidado
-      productos = warehouse_conn.getStock(ENV["ALMACEN_LIBRE_DISPOSICION"], sku)
+      productos = warehouse_conn.getStock(Almacen.buscar("general")["almacen_id"], sku)
       productos = productos.nil? ? 0 : productos.take(cantidad_a_despachar)
       productos.each do |producto|
-        a = warehouse_conn.moverStock(producto["_id"], ENV["ALMACEN_DESPACHO"])
+        a = warehouse_conn.moverStock(producto["_id"], Almacen.buscar("despacho")["almacen_id"])
         if !a.nil? #Si hay error en mover el stock al almacen de despacho, pass
           b = warehouse_conn.moverStockBodega(producto["_id"], almacen_otro_grupo_id)
           if !b.nil? #Si hay error en despachar a otra bodega, pass
             cantidad_despachada += 1
           else
-            warehouse_conn.moverStock(producto["_id"], ENV["ALMACEN_LIBRE_DISPOSICION"])
+            warehouse_conn.moverStock(producto["_id"], Almacen.buscar("general")["almacen_id"])
           end
         end
       end
