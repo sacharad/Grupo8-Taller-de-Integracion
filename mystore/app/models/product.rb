@@ -60,7 +60,7 @@ class Product < ActiveRecord::Base
 
   #-----------------------------Actualization of Almacenes ---------------------------------------------------------
 
-  def self.actualizarAlmacenes()
+  def self.actualizarAlmacenes
     Rails.logger.info "STARTING actualizacion de almacenes en la BD"
     conn = Connectors::WarehouseConnector.new
     Almacen.destroy_all
