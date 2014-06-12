@@ -1,0 +1,23 @@
+<script type="text/javascript">
+   
+  function initialize() {
+      var santiago = new google.maps.LatLng(-33.437967, -70.6504);
+      var mapOptions = {
+        zoom: 12,
+        center: santiago,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      };
+
+      last_seen_map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+  }
+  
+  //inicializa el mapa al cargar la página.
+  google.maps.event.addDomListener(window, 'load', function(){
+    initialize();
+  });
+  
+
+  
+  
+</script>
+

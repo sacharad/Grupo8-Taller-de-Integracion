@@ -24,3 +24,6 @@ body {
 .center{
   text-align: center;
 }
+#map_canvas{
+  height: 300px;
+ }
