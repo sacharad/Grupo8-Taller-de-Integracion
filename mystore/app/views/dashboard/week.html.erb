@@ -1,0 +1,123 @@
+<div class="center">
+  <h1>Dashboard</h1>
+</div>
+<nav class="text-center" id="dashboard_nav">
+  <ul class="list-inline">
+    <li class="nav_li active"><a class="nav_btn" href="#sales"><h5>Ventas</h5></a></li>
+    <li class="nav_li"><a class="nav_btn" href="#fulfilled_orders"><h5>Pedidos Realizados</h5></a></li>
+    <li class="nav_li"><a class="nav_btn" href="#broken_orders"><h5>Pedidos Quebrados</h5></a></li>
+    <li class="nav_li"><a class="nav_btn" href="#top_sellers"><h5>Productos más Vendidos</h5></a></li>
+    <li class="nav_li"><a class="nav_btn" href="#top_broken"><h5>Pedidos más Quebrados</h5></a></li>
+    <li class="nav_li"><a class="nav_btn" href="#top_buyers"><h5>Mejores Clientes</h5></a></li>
+    <li class="nav_li"><a class="nav_btn" href="#map_show"><h5>Mapa Pedidos</h5></a></li>
+  </ul>
+</nav>
+<div id="sales" class="dashboard_row grey">
+  <div class="container">
+    <div class="row">
+      <h2>Ventas</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1" class="chart">
+        <div id="sales_chart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="fulfilled_orders" class="dashboard_row normal">
+  <div class="container">
+    <div class="row">
+      <h2>Pedidos Realizados</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1" class="chart">
+        <div id="fulfilled_orders_chart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="broken_orders" class="dashboard_row grey">
+  <div class="container">
+    <div class="row">
+      <h2>Pedidos Quebrados</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1" class="chart">
+        <div id="broken_orders_chart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="top_sellers" class="dashboard_row normal">
+  <div class="container">
+    <div class="row">
+      <h2>Productos más Vendidos</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1" class="chart">
+        <div id="top_sellers_chart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="top_broken" class="dashboard_row grey">
+  <div class="container">
+    <div class="row">
+      <h2>Pedidos más quebrados</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1" class="chart">
+        <div id="top_broken_chart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="top_buyers" class="dashboard_row normal">
+  <div class="container">
+    <div class="row">
+      <h2>Mejores Clientes</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1" class="chart">
+        <div id="top_buyers_chart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="map_show" class="row dashboard_row grey"> <!-- Fila superior donde va ubicado el mapa principal -->
+  <div class="row"><h2>Mapa Pedidos</h2></div>
+  <div class="well well-large chart col-md-10 col-md-offset-1"> <!-- Caja donde va el mapa principal -->
+    <div id="map_canvas" data-map-output="map">
+      <%= render 'maps' %>
+    </div>
+  </div>
+</div>
+
+<table class="table table-hover">
+  <thead>
+    <th><h4>KPI</h4></th>
+    <th><h4>Forma calculo</h4></th>
+    <th><h4>Porcentaje</h4></th>
+  </tr>
+  </thead>
+  <tbody>
+    <th><h5>Quiebres de Stocks</h5></th>
+    <th><h5>Quiebre Stock/TotalPedidos</h5></th>
+    <th><h5><%= @quiebres/@pedidos %></h5></th>
+  </tbody>
+  <tbody>
+    <th><h5>Ventas efectivas</h5></th>
+    <th><h5>Ventas/TotalPedidos</h5></th>
+    <th><h5><%= @ventas/@pedidos %></h5></th>
+  </tbody>
+  <tbody>
+    <th><h5>Pedidos incorrectos procesados</h5></th>
+    <th><h5>Incorrectos/TotalPedidos</h5></th>
+    <th><h5><%= @pedidos_incorrectos/@pedidos%></h5></th>
+  </tbody>
+</table> 
+
+
+<%= render 'week' %>
+
+ 
