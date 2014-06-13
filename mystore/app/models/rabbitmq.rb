@@ -3,18 +3,24 @@ require "bunny"
 	
 	def self.ofertas
 		lista_msj =get_msj("ofertas")
-		lista_msj. each do |msj|
-			#msj = msj[1..-2]
-			#JSON.parse (msj)
-			##Hacer algo con el metodo que me de Nacho
+		list_hash =[]
+		lista_msj.each do |msj|
+			#Aqui se genera un hash con cada uno de los pametros que trae el mensaje
+			hash = JSON.parse (msj)
+			hash["inicio"] = Time.at(hash["inicio"]/1000]
+			hash["fin"] = Time.at(hash["fin"]/1000]
+			#Usar time.strftime("%Y-%m-%d") para extraer solo fecha o time.strftime("%H:%M:%S") para solo hora
+			list_hash << hash
 		end
 	end 
 
 	def self.reposicion
 		lista_msj =get_msj("reposicion")
-		lista_msj. each do |msj|
-			#msj = msj[1..-2]
-			#JSON.parse (msj)
+		list_hash =[]
+		lista_msj.each do |msj|
+			hash = JSON.parse (msj)
+			hash["fecha"] = Time.at(hash["fecha"]/1000]
+			list_hash << hash
 			##Hacer algo con el metodo que me de Nacho
 		end
 	end 
@@ -27,6 +33,7 @@ require "bunny"
 		rescue 
 		@conn.close
 	end
+	
 	private 
 	def self.connect(queue_name)
 		@conn = Bunny.new("amqp://cnkihpad:vTi4ULXrnhtl3WHjZVDRE9wujtYq9Tgk@tiger.cloudamqp.com/cnkihpad")
@@ -62,10 +69,5 @@ require "bunny"
 		rescue 
 		@conn.close
 	end 
-
-
-
-
-
 
 end
