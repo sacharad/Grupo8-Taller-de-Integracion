@@ -1,0 +1,24 @@
+<h1>Ventas</h1>
+
+ <table class="table table-hover">
+ 	<thead>
+	  <th><h4>Rut Cliente</h4></th>
+	  <th><h4>Monto venta</h4></th>
+	  <th><h4>Fecha</h4></th>
+	  <th><h4>SKU producto</h4></th>
+	  <th><h4>Cantidad</h4></th>
+	</thead>
+	<% @list_hash.each do |item| %>
+		<tbody>
+		  <th><h5><%= item["rut"] %></h5></th>
+		  <th><h5><%= item["precio_venta"] %></h5></th>
+  		  <th><h5><%= item["fecha"] %></h5></th>
+		  <th><h5><%= item["producto"]["sku"] %></h5></th>
+  		  <th><h5><%= item["producto"]["cantidad"] %></h5></th>
+
+		</tbody>
+		
+	<%end%>
+
+</table> 
+

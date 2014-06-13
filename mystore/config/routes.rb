@@ -20,7 +20,10 @@ Mystore::Application.routes.draw do
   resources :orders_sftps
   resources :clients
   resources :products
-  get '/dashboard', to:'dashboard#index', as: 'dashboard'
+  get '/dashboard', to:'dashboard#index', as: 'dashboard'  
+  get '/dashboard/show_sales', to:'dashboard#show_sales', as: 'show_sales'
+  get '/dashboard/show_brokestock', to:'dashboard#show_brokestock', as: 'show_brokestock'
+  get '/dashboard/show_wrongorders', to:'dashboard#show_wrongorders', as: 'show_wrongorders'
   get '/bodega/almacenes', to: 'warehouse#index', as:'bodega'
   get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
   get '/bodega/almacenes/:almacen_id/sku/:sku_id', to: 'warehouse#sku', as:'sku'

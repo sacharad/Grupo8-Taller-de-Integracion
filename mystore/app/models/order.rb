@@ -58,7 +58,5 @@ class Order < ActiveRecord::Base
 		coll = @db.collection(name)
 
 	end
-	
 
-	
 end

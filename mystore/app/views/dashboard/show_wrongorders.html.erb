@@ -1,0 +1,27 @@
+<h1>Pedidos incorrectos</h1>
+</br>
+ 
+	<% @list_hash.each do |item| %>
+	
+	
+		  <h4>Pedido ID: <%= item["pedidoID"] %></h4>
+		  <h4>Rut Cliente: <%= item["rut"] %></h4>
+  		  <h4>Fecha: <%= item["fecha"] %></h4>
+  		  <div class ="well well-small">
+  		  <table class="table table-hover">
+  		   	<thead>
+			  <th><h4>SKU Producto</h4></th>
+			  <th><h4>Cantidad</h4></th>
+			</thead>
+  		  <% item["pedidos"].each do |pedido| %>
+  		  	  <tbody>
+			  <th><h5><%= pedido["sku"] %></h5></th>
+	  		  <th><h5><%= pedido["cantidad"] %></h5></th>
+	  		  </tbody>	  		  
+  		  <%end%>
+  		  </table>
+		</div>
+		
+	<%end%>
+
+

@@ -1,27 +1,39 @@
 <h1>Dashboard</h1>
 
-
+<div class= "well well-small">
+	<%= link_to "#" do %>
+		<h4>Pedidos totales: <%= @pedidos %></h4>
+	<%end%>
+</div>
  <table class="table table-hover">
  	<thead>
-	  <th><h4>KPI</h4></th>
+	  <th><h4>Reporte</h4></th>
+	  <th><h4>Cantidad</h4></th>
+	  <th><h4>KPI(%)</h4></th>
 	  <th><h4>Forma calculo</h4></th>
-	  <th><h4>Porcentaje</h4></th>
+	  <th></th>
 	</tr>
 	</thead>
 	<tbody>
 	  <th><h5>Quiebres de Stocks</h5></th>
-	  <th><h5>Quiebre Stock/TotalPedidos</h5></th>
+	  <th><h5><%= @quiebres %></h5></th>
 	  <th><h5><%= @quiebres/@pedidos %></h5></th>
+	  <th><h5>Quiebre Stock/TotalPedidos</h5></th>
+	  <th> <%= link_to 'Details', show_sales_path, :class => 'btn btn-info' %> </th>
 	</tbody>
 	<tbody>
 	  <th><h5>Ventas efectivas</h5></th>
+	  <th><h5><%= @ventas%></h5></th>
+	  <th><h5><%= @ventas/@pedidos %></h5></th>	  
 	  <th><h5>Ventas/TotalPedidos</h5></th>
-	  <th><h5><%= @ventas/@pedidos %></h5></th>
+	  <th> <%= link_to 'Details', show_brokestock_path, :class => 'btn btn-info' %> </th>
 	</tbody>
 	<tbody>
 	  <th><h5>Pedidos incorrectos procesados</h5></th>
+	  <th><h5><%= @pedidos_incorrectos%></h5></th>
+	  <th><h5><%= @pedidos_incorrectos/@pedidos%></h5></th>	  
 	  <th><h5>Incorrectos/TotalPedidos</h5></th>
-	  <th><h5><%= @pedidos_incorrectos/@pedidos%></h5></th>
+	  <th> <%= link_to 'Details', show_wrongorders_path, :class => 'btn btn-info' %> </th>
 	</tbody>
 </table> 
 
