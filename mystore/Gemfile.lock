@@ -1,6 +1,6 @@
 GIT
-  remote: https://github.com/spree/spree_auth_devise.git
-  revision: 4959656be98742249f85879207a606e05d622cc6
+  remote: http://github.com/spree/spree_auth_devise.git
+  revision: 81a0fbb2db15efbbb50d0d139bbc41aee7fa58a1
   branch: 2-2-stable
   specs:
     spree_auth_devise (2.2.0)
@@ -12,8 +12,8 @@ GIT
       spree_core (~> 2.2.0)
 
 GIT
-  remote: https://github.com/spree/spree_gateway.git
-  revision: 46b8610fd1db198410542374536c7cb17263b1a3
+  remote: http://github.com/spree/spree_gateway.git
+  revision: ea9dd046848523c79845abbd5462f5e13941276e
   branch: 2-2-stable
   specs:
     spree_gateway (2.2.1)
@@ -96,6 +96,8 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     colorize (0.7.3)
+    d3js-rails (3.1.6)
+      railties (>= 3.0, < 5.0)
     debug_inspector (0.0.2)
     deface (1.0.0)
       colorize (>= 0.5.8)
@@ -323,6 +325,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.1.1)
   bson_ext
   coffee-rails (~> 4.0.0)
+  d3js-rails
   dropbox-sdk
   faraday
   faraday_middleware

@@ -63,8 +63,8 @@ gem 'net-scp'
 gem 'json'
 
 gem 'spree', '2.2.1'
-gem 'spree_gateway', :git => 'https://github.com/spree/spree_gateway.git', :branch => '2-2-stable'
-gem 'spree_auth_devise', :git => 'https://github.com/spree/spree_auth_devise.git', :branch => '2-2-stable'
+gem 'spree_gateway', :git => 'http://github.com/spree/spree_gateway.git', :branch => '2-2-stable'
+gem 'spree_auth_devise', :git => 'http://github.com/spree/spree_auth_devise.git', :branch => '2-2-stable'
 
 
 gem "httparty"
@@ -82,6 +82,9 @@ gem 'whenever', :require => false
 
 #To connection with google drive
 gem 'google_drive'
+
+#To charts
+gem 'd3js-rails'
 
 #To read microsoft access
 #gem 'mdb'

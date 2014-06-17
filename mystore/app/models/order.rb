@@ -41,8 +41,39 @@ class Order < ActiveRecord::Base
 		insert_report("Reporte_OrdenesIncorrectas",order)
 	end
 
+	#Retorna una lista de hash para cada documento de una cola 
+	def self.get_report(name_queue)
 
-	##Metodos internos solo para probar los insert en Mongo
+	    ventas = Order.get_collection(name_queue) 
+  	    @list_hash =[]
+  	    ventas.find.each { |row|
+  	 	    hash = JSON.parse (row.to_json)
+  	 	@list_hash << hash
+	    }
+	    return @list_hash
+		
+	end
+
+	#Metodo que entrega un ranking de los productos para la cola especificada (entraga un hash sku, cantidad de aparaciones)
+	#Actualmente solo funciona para Ventas y quiebres de Stock
+	def self.ranking_products(name_queue)
+		ventas = get_report(name_queue)
+		hash = Hash.new
+		ventas.each do |venta|
+			sku = venta["producto"]["sku"]
+			if hash[sku].nil?
+				hash[sku] = 0			
+			end
+			
+			hash [sku] = hash[sku] + 1 
+			
+		end
+		ranking_ventas = hash.sort_by { |sku, value| value }.reverse
+	end
+
+
+	##Metodos internos
+	private
 
 	def self.list_collection
 

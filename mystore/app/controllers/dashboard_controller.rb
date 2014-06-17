@@ -1,4 +1,5 @@
 class DashboardController < ApplicationController
+   respond_to :html, :json
   def index
   	@quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
   	@pedidos = Order.get_collection("InfoPedidos").count.to_f
@@ -8,39 +9,24 @@ class DashboardController < ApplicationController
   end
 
   def show_sales
-  	 ventas = Order.get_collection("Reporte_Ventas") 
-  	 @list_hash =[]
-  	 hash
-  	 ventas.find.each { |row|
-  	 	hash = JSON.parse (row.to_json)
-  	 	@list_hash << hash
-	 }
-	 return @list_hash	
+
+  	 @list_hash = Order.get_report("Reporte_Ventas") 
+	 	
   end
+
   def show_brokestock
 
-  	 ventas = Order.get_collection("Reporte_QuiebresStock") 
-  	 @list_hash =[]
-  	 hash
-  	 ventas.find.each { |row|
-  	 	hash = JSON.parse (row.to_json)
-  	 	@list_hash << hash
-	 }
-	 return @list_hash	
+	   @list_hash = Order.get_report("Reporte_QuiebresStock")
 
   end
 
   def show_wrongorders
 
-  	 ventas = Order.get_collection("Reporte_OrdenesIncorrectas") 
-  	 @list_hash =[]
-  	 hash
-  	 ventas.find.each { |row|
-  	 	hash = JSON.parse (row.to_json)
-  	 	@list_hash << hash
-	 }
-	 return @list_hash	
-  	
+  	 @list_hash = Order.get_report("Reporte_OrdenesIncorrectas") 
+  	  	
+  end
+
+  def show_graph
   end
 
 end

@@ -19,14 +19,14 @@
 	  <th><h5><%= @quiebres %></h5></th>
 	  <th><h5><%= @quiebres/@pedidos %></h5></th>
 	  <th><h5>Quiebre Stock/TotalPedidos</h5></th>
-	  <th> <%= link_to 'Details', show_sales_path, :class => 'btn btn-info' %> </th>
+	  <th> <%= link_to 'Details', show_brokestock_path, :class => 'btn btn-info' %> </th>
 	</tbody>
 	<tbody>
 	  <th><h5>Ventas efectivas</h5></th>
 	  <th><h5><%= @ventas%></h5></th>
 	  <th><h5><%= @ventas/@pedidos %></h5></th>	  
 	  <th><h5>Ventas/TotalPedidos</h5></th>
-	  <th> <%= link_to 'Details', show_brokestock_path, :class => 'btn btn-info' %> </th>
+	  <th> <%= link_to 'Details', show_sales_path, :class => 'btn btn-info' %> </th>
 	</tbody>
 	<tbody>
 	  <th><h5>Pedidos incorrectos procesados</h5></th>

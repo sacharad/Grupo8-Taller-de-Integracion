@@ -24,6 +24,7 @@ Mystore::Application.routes.draw do
   get '/dashboard/show_sales', to:'dashboard#show_sales', as: 'show_sales'
   get '/dashboard/show_brokestock', to:'dashboard#show_brokestock', as: 'show_brokestock'
   get '/dashboard/show_wrongorders', to:'dashboard#show_wrongorders', as: 'show_wrongorders'
+  get '/dashboard/show_graph', to:'dashboard#show_graph', as: 'show_graph'
   get '/bodega/almacenes', to: 'warehouse#index', as:'bodega'
   get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
   get '/bodega/almacenes/:almacen_id/sku/:sku_id', to: 'warehouse#sku', as:'sku'
