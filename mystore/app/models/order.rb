@@ -18,13 +18,13 @@ class Order < ActiveRecord::Base
 		
 	end
 
-	#example info: {"fecha" => "12/03/2013", "hora" => "16:00", "rut" =>"171234560", "producto" => {"sku" => "US123", "cantidad" => 3}}
+	#example info: {"id_pedido_padre" => "12", fecha" => "12/03/2013", "hora" => "16:00", "rut" =>"171234560", "producto" => {"sku" => "US123", "cantidad" => 3}}
 	def self.report_order(order)
 		insert_report("InfoPedidos",order)		 
 		
 	end
 
-	#example sale: {"rut" =>"151234560", "fecha" => "13/06/2014", "hora" => "10:01", "precio_venta" => "52000", "producto" => {"sku" => "SKU45123", "cantidad" => 10}}
+	#example sale: {"id_pedido_padre" => "12", "direccion_despacho"=>"calle patito",rut" =>"151234560", "fecha" => "13/06/2014", "hora" => "10:01", "precio_venta" => "52000", "producto" => {"sku" => "SKU45123", "cantidad" => 10}}
 	def self.report_sales(sale)
 		insert_report("Reporte_Ventas", sale)
 		
