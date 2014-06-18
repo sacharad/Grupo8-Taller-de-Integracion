@@ -2,15 +2,33 @@ class Rabbitmq < ActiveRecord::Base
 require "bunny"
 	
 	def self.ofertas
-		lista_msj =get_msj("ofertas")
-		list_hash =[]
+		lista_msj = get_msj("ofertas")
 		lista_msj.each do |msj|
 			#Aqui se genera un hash con cada uno de los pametros que trae el mensaje
-			hash = JSON.parse (msj)
-			hash["inicio"] = Time.at(hash["inicio"]/1000]
-			hash["fin"] = Time.at(hash["fin"]/1000]
+			hash = JSON.parse(msj)
+			hash["inicio"] = Time.at(hash["inicio"]/1000)
+			hash["fin"] = Time.at(hash["fin"]/1000)
 			#Usar time.strftime("%Y-%m-%d") para extraer solo fecha o time.strftime("%H:%M:%S") para solo hora
-			list_hash << hash
+			#Esto es porque en ambiente de desarrollo volvemos a publicar los mensajes descargados para no afectar la operacion del servidor
+			if (Rails.env.development?)
+				oferta_i = Oferta.where("initial_date = ? and due_date  = ? and sku = ? and price = ? ", hash["inicio"], hash["fin"], hash["sku"], hash["precio"]).first
+			  	
+			  	if(oferta_i.nil?)
+					oferta = Oferta.new
+					oferta.sku = hash["sku"]
+					oferta.price = hash["precio"]
+					oferta.initial_date = hash["inicio"]
+					oferta.due_date = hash["fin"]
+					oferta.save
+				end
+			else 
+				oferta = Oferta.new
+				oferta.sku = hash["sku"]
+				oferta.price = hash["precio"]
+				oferta.initial_date = hash["inicio"]
+				oferta.due_date = hash["fin"]
+				oferta.save	
+			end	
 		end
 	end 
 
@@ -19,9 +37,9 @@ require "bunny"
 		list_hash =[]
 		lista_msj.each do |msj|
 			hash = JSON.parse (msj)
-			hash["fecha"] = Time.at(hash["fecha"]/1000]
+			hash["fecha"] = Time.at(hash["fecha"]/1000)
 			list_hash << hash
-			##Hacer algo con el metodo que me de Nacho
+			##Insertar en la base de datos mongo
 		end
 	end 
 
@@ -45,26 +63,38 @@ require "bunny"
 
 	def self.get_msj(nombre_cola)		
 		connect(nombre_cola)		
-		@m =[]
+		@mensajes =[]
 		if (nombre_cola =="ofertas")
 			@q.subscribe do |delivery_info, metadata, payload|
-				 @m  << payload.to_s
+				 @mensajes  << payload.to_s
 				 puts "Received #{payload} from #{nombre_cola} queue"
 			end
-		elsif (nombre_cola == "reposicion") 
-				@m  << payload.to_s
+
+		elsif (nombre_cola == "reposicion")				
 			@q.subscribe do |delivery_info, metadata, payload|
-				 puts "Received #{payload} from #{nombre_cola} queue"
+				 @mensajes  << payload.to_s
+				 puts "Received #{payload} from #{nombre_cola} queue"		
 			end
-		elsif (nombre_cola == "prueba") 
+		elsif (nombre_cola == "prueba")
 			@q.subscribe do |delivery_info, metadata, payload|
 				 #puts "Received #{payload} from #{nombre_cola} queue"
-				 @m  << payload.to_s
+				 @mensajes  << payload.to_s
 				 puts "Received #{payload} from #{nombre_cola} queue"
 			end			
 		end
+
 		@conn.close
-		return @m
+
+        if (Rails.env.development?)
+        	puts "Se encuentra en ambiente de produccion......volviendo a publicar los mensajes"
+        	puts "Esto puede tardar unos minutos.......espere"
+   		     	@mensajes.each do |m|
+			 		publish( m, nombre_cola)
+		 		end
+		 		puts "publicados"
+	    end
+		
+		return @mensajes
 		
 		rescue 
 		@conn.close
