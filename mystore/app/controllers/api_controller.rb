@@ -16,6 +16,12 @@ class ApiController < ApplicationController
     sku = params["SKU"]
     cantidad = params["cantidad"].to_i
 
+    Rails.logger.info(grupo);
+    Rails.logger.info(password_sha1_recibido);
+    Rails.logger.info(almacen_otro_grupo_id);
+    Rails.logger.info(sku);
+    Rails.logger.info(cantidad);
+
     #-----Chequeo de autorización-------------------------
     if Autorizacion.find_by_grupo(grupo).nil?
       render :json => [:error => "Grupo no registra autorización o nombre de usuario incorrecto."].to_json and return

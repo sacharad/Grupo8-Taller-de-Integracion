@@ -1,5 +1,9 @@
 class DashboardController < ApplicationController
+<<<<<<< HEAD
    respond_to :html, :json
+=======
+  layout "dashboard"
+>>>>>>> Dashboard improved
   def index
   	@quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
   	@pedidos = Order.get_collection("InfoPedidos").count.to_f
