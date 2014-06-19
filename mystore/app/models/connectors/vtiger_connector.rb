@@ -21,12 +21,9 @@ class Connectors::VtigerConnector
   def getAddress(direccion_id)
     if direccion_id.nil?
       Rails.logger.info 'ERROR getAddress didnt receive valid direccion_id'
-      Rails.logger.info 'class direccion_id: '+direccion_id.class.to_s
       Rails.logger.info 'direccion_id: '+direccion_id.to_s
       return nil
     end
-    Rails.logger.info "Direccion Class: "+ direccion_id.class.to_s
-    Rails.logger.info "Direccion: "+ direccion_id.to_s
 
     query = URI.encode("SELECT otherstreet, othercity, otherstate FROM Contacts WHERE cf_707 = '#{direccion_id}';")
     adds = RestClient.get("#{@url}operation=query&sessionName=#{@session_id}&query=#{query}")
@@ -38,9 +35,7 @@ class Connectors::VtigerConnector
       return nil
     end
 
-    Rails.logger.info "Query Class: "+ query.class.to_s
     Rails.logger.info "Query : "+ query.to_s
-    Rails.logger.info "adds Class: "+ adds.class.to_s
     Rails.logger.info "adds: "+ adds.to_s
     if adds["result"].nil?
       Rails.logger.info 'ERROR getAddress didnt receive vTiger Response containig result json key'

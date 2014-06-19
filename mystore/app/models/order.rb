@@ -41,6 +41,10 @@ class Order < ActiveRecord::Base
 		insert_report("Reporte_OrdenesIncorrectas",order)
 	end
 
+	def self.report_reposicion(replenish)
+		insert_report("Reporte_Reposicion",replenish)
+	end
+
 	#Retorna una lista de hash para cada documento de una cola 
 	def self.get_report(name_queue)
 
