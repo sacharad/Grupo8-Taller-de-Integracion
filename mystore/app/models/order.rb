@@ -18,7 +18,7 @@ class Order < ActiveRecord::Base
 		
 	end
 
-	#example info: {"id_pedido_padre" => "12", fecha" => "12/03/2013", "hora" => "16:00", "rut" =>"171234560", "producto" => {"sku" => "US123", "cantidad" => 3}}
+	#example info: {"id_pedido_padre" => "12", "direccion_despacho"=>"calle patito", fecha" => "12/03/2013", "hora" => "16:00", "rut" =>"171234560", "producto" => {"sku" => "US123", "cantidad" => 3}}
 	def self.report_order(order)
 		insert_report("InfoPedidos",order)		 
 		
@@ -41,18 +41,90 @@ class Order < ActiveRecord::Base
 		insert_report("Reporte_OrdenesIncorrectas",order)
 	end
 
+
 	def self.report_reposicion(replenish)
 		insert_report("Reporte_Reposicion",replenish)
 	end
+	#Metodo que rentorna un hash que contiene un arreglo de los pedido. Estos pedidos son un hash también
+	def self.get_complete_report(name_queue)
+		hash = Hash.new
+		hash["totales"] = get_report(name_queue)
+		hash["ano"] = get_report_by_date(name_queue, "year")
+		hash["mes"] = get_report_by_date(name_queue, "month")
+		hash["semana"] = get_report_by_date(name_queue, "week")
+		hash["dia"] = get_report_by_date(name_queue, "day")
+		return hash
+	end
+	def self.get_complete_ranking_products(name_queue)
+		hash = Hash.new
+		hash["totales"] = ranking_products(name_queue, "totales")
+		hash["ano"] = ranking_products(name_queue, "year")
+		hash["mes"] = ranking_products(name_queue, "month")
+		hash["semana"] = ranking_products(name_queue, "week")
+		hash["dia"] = ranking_products(name_queue, "day")
+		return hash
+	end
+	def self.get_complete_ranking_clients(name_queue)
+		hash = Hash.new
+		hash["totales"] = ranking_clients(name_queue, "totales")
+		hash["ano"] = ranking_clients(name_queue, "year")
+		hash["mes"] = ranking_clients(name_queue, "month")
+		hash["semana"] = ranking_clients(name_queue, "week")
+		hash["dia"] = ranking_clients(name_queue, "day")
+		return hash
+	end
 
-	#Retorna una lista de hash para cada documento de una cola 
+	#Retorna una lista de hash para cada documento de una cola
 	def self.get_report(name_queue)
 
 	    ventas = Order.get_collection(name_queue) 
   	    @list_hash =[]
   	    ventas.find.each { |row|
   	 	    hash = JSON.parse (row.to_json)
-  	 	@list_hash << hash
+  	 	    @list_hash << hash
+  	 	}
+  	 	return @list_hash
+	end
+	#Retorna una lista de hash para cada documento de una cola
+	#filter puede ser "totales","año", "mes", "semana", "día"
+	def self.get_report_by_date(name_queue, filter)
+
+	    ventas = Order.get_collection(name_queue) 
+  	    @list_hash =[]
+  	    ventas.find.each { |row|
+  	 	    hash = JSON.parse (row.to_json)
+
+  	 	    if(filter == "year")  	 	    	
+  	 	    	fecha = Date.strptime(hash["fecha"], "%Y-%m-%d")
+  	 	    	if(fecha.year ==  Date.today.year)
+  	 	    		@list_hash << hash
+  	 	    	end
+  	 	    
+  	 		elsif (filter == "month")
+  	 			fecha = Date.strptime(hash["fecha"], "%Y-%m-%d")
+  	 	    	if(fecha.month ==  Date.today.month)
+  	 	    		@list_hash << hash
+  	 	    	end
+
+  	 		elsif (filter == "week")
+  	 			fecha = Date.strptime(hash["fecha"], "%Y-%m-%d")
+  	 			date_final= Date.today + 7.day - Date.today.wday.day
+  	 			date_initial= Date.today - Date.today.wday.day
+  	 	    	if(fecha >= date_initial && fecha <= date_final)
+  	 	    		@list_hash << hash
+  	 	    	end
+
+  	 		elsif (filter == "day")
+  	 			fecha = Date.strptime(hash["fecha"], "%Y-%m-%d")
+  	 	    	if(fecha ==  Date.today)
+  	 	    		@list_hash << hash
+  	 	    	end
+  	 		else
+	  	 		 ##Esto equivale a filter == "totales"
+	  	 		 @list_hash << hash
+
+  	 		end 
+  	 	   	 	
 	    }
 	    return @list_hash
 		
@@ -60,8 +132,12 @@ class Order < ActiveRecord::Base
 
 	#Metodo que entrega un ranking de los productos para la cola especificada (entraga un hash sku, cantidad de aparaciones)
 	#Actualmente solo funciona para Ventas y quiebres de Stock
-	def self.ranking_products(name_queue)
-		ventas = get_report(name_queue)
+	def self.ranking_products(name_queue, filter)
+		if(filter == "totales")
+			ventas = get_report(name_queue)
+		else
+			ventas = get_report_by_date(name_queue, filter)
+		end
 		hash = Hash.new
 		ventas.each do |venta|
 			sku = venta["producto"]["sku"]
@@ -73,6 +149,25 @@ class Order < ActiveRecord::Base
 			
 		end
 		ranking_ventas = hash.sort_by { |sku, value| value }.reverse
+	end
+	def self.ranking_clients(name_queue, filter)
+		if(filter == "totales")
+			ventas = get_report(name_queue)
+		else
+			ventas = get_report_by_date(name_queue, filter)
+		end
+		hash = Hash.new
+		ventas.each do |venta|
+			rut = venta["rut"]
+			if hash[rut].nil?
+				hash[rut] = 0			
+			end
+			
+			hash [rut] = hash[rut] + 1 
+			
+		end
+		ranking_clientes = hash.sort_by { |rut, value| value }.reverse
+		
 	end
 
 
