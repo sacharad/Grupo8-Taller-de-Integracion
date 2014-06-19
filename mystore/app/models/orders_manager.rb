@@ -31,7 +31,8 @@ class OrdersManager < ActiveRecord::Base
 				"fecha" => pedido["fecha"][1],
 				"hora" => pedido["hora"],
 				"direccion" => vtiger_address,
-				"rut" => pedido["rut"]
+				"rut" => pedido["rut"],
+				"pedidos" => []
 			}
 
 			if vtiger.checkClient(pedido["direccionID"], pedido["rut"])
@@ -82,6 +83,12 @@ class OrdersManager < ActiveRecord::Base
 						Order.report_brokestock(reporte)
 					end
 				end
+				Rails.logger.info "Following report is for successful order delivery"
+				Rails.logger.info reporte
+				Rails.logger.info "Following report is for broken stock" if quiebre
+				Rails.logger.info reporte_quiebre if quiebre
+				#~~~~~ Order.report_sales(reporte) -->
+				#~~~~~ Order.report_brokestock(reporte_quiebre) if quiebre -->
 			else
 				Order.report_wrongorder(pedido)
 				Rails.logger.info "reporte ORDEN MAL: #{pedido}"

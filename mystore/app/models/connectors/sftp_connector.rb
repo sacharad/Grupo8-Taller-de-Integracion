@@ -8,7 +8,6 @@ class Connectors::SftpConnector
 
 		json_pedidos_nuevos = []
 
-
 		#~~~~~ TESTING:
 		i = 0 unless Rails.env.production?
 
