@@ -11,8 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20140619143836) do
+
+
 
   create_table "admins", force: true do |t|
     t.string   "username"
@@ -21,9 +21,6 @@ ActiveRecord::Schema.define(version: 20140619143836) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-=======
-ActiveRecord::Schema.define(version: 20140617175237) do
->>>>>>> 1a3ec61854539d45b54d72d8ed4fbc4762b7c0b2
 
   create_table "almacens", force: true do |t|
     t.string   "name"

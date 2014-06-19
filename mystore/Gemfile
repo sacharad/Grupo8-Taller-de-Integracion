@@ -83,17 +83,14 @@ gem 'whenever', :require => false
 #To connection with google drive
 gem 'google_drive'
 
-<<<<<<< HEAD
 gem 'twitter'
 
 #To read microsoft access
 #gem 'mdb'
-=======
 #To use rabbitmq
 #https://marcqualie.com/2012/12/install-rabbitmq-on-ubuntu-12.04
 #http://rubybunny.info/articles/getting_started.html
 gem "bunny"
->>>>>>> 1a3ec61854539d45b54d72d8ed4fbc4762b7c0b2
 
 #To use jarfile
 
