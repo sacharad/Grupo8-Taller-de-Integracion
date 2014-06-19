@@ -1,5 +1,8 @@
 Mystore::Application.routes.draw do
 
+  resources :sessions
+  resources :admins
+  get "log_in" => "sessions#new", :as => "log_in"
 
   mount Spree::Core::Engine, :at => '/ecommerce'
 
