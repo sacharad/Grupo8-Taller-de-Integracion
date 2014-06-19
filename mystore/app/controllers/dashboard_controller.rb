@@ -25,8 +25,6 @@ class DashboardController < ApplicationController
   	 @list_hash = Order.get_report("Reporte_OrdenesIncorrectas") 
   	  	
   end
-
-  def show_graph
-  end
+ 
 
 end
