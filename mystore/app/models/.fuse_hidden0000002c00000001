@@ -74,60 +74,6 @@ class Order < ActiveRecord::Base
 		return hash
 	end
 
-	def self.split_report_for(name_queue, option)
-		splited_report= []
-		if(option == "week_days")
-			report = filter_report_for(name_queue, "week")
-			date_initial= Date.today - 7.day
-			i = 0
-			7.times do
-				splited_report[i]=[]
-	  	 		report.each do |item|
-	  	 			fecha = Date.strptime(item["fecha"], "%Y-%m-%d")
-		  	 		if(fecha == date_initial + i.day)
-		  	 			splited_report[i] << item	  	 
-		  	 		end
-	  	 		end
-	  	 		i = i+1 
-  	 		end
-  	 	#for i in 1..5 do end
-  	 	#5.times do end
-		elsif(option == "month_days")
-			report = filter_report_for(name_queue, "month")
-			date_initial= Date.today - 30.day
-			i = 0
-			30.times do
-				splited_report[i]=[]
-	  	 		report.each do |item|
-	  	 			fecha = Date.strptime(item["fecha"], "%Y-%m-%d")
-		  	 		if(fecha == date_initial + i.day)
-		  	 			splited_report[i] << item	  	 
-		  	 		end
-	  	 		end
-	  	 		i = i+1 
-  	 		end 
-		elsif(option == "month")
-			report = get_report(name_queue)
-			date_initial= Date.today
-			i = 0
-			12.times do
-				splited_report[i]=[]
-	  	 		report.each do |item|
-	  	 			fecha = Date.strptime(item["fecha"], "%Y-%m-%d")
-	  	 			if(fecha.month == date_initial.month && fecha.year == date_initial.year)
-		  	 			splited_report[i] << item	  	 
-		  	 		end
-	  	 		end
-	  	 		i = i+1
-	  	 		date_initial = date_initial - i.month
-  	 		end
-  	 		splited_report.reverse
-		else
-			##nada
-		end
-		return splited_report
-		
-	end
 	#Retorna una lista de hash para cada documento de una cola
 	def self.get_report(name_queue)
 
@@ -141,7 +87,7 @@ class Order < ActiveRecord::Base
 	end
 	#Retorna una lista de hash para cada documento de una cola
 	#filter puede ser "totales","año", "mes", "semana", "día"
-	def self.filter_report_for(name_queue, filter)
+	def self.get_report_by_date(name_queue, filter)
 
 	    ventas = Order.get_collection(name_queue) 
   	    @list_hash =[]
@@ -162,8 +108,8 @@ class Order < ActiveRecord::Base
 
   	 		elsif (filter == "week")
   	 			fecha = Date.strptime(hash["fecha"], "%Y-%m-%d")
-  	 			date_final= Date.today
-  	 			date_initial= Date.today - 7.day
+  	 			date_final= Date.today + 7.day - Date.today.wday.day
+  	 			date_initial= Date.today - Date.today.wday.day
   	 	    	if(fecha >= date_initial && fecha <= date_final)
   	 	    		@list_hash << hash
   	 	    	end

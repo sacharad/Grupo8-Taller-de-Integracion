@@ -108,20 +108,20 @@ class Order < ActiveRecord::Base
   	 		end 
 		elsif(option == "month")
 			report = get_report(name_queue)
-			date_initial= Date.today
+			date_initial= Date.today - 12.month
 			i = 0
 			12.times do
 				splited_report[i]=[]
 	  	 		report.each do |item|
 	  	 			fecha = Date.strptime(item["fecha"], "%Y-%m-%d")
-	  	 			if(fecha.month == date_initial.month && fecha.year == date_initial.year)
+	  	 			date_initial = date_initial + i.month
+		  	 		if(fecha.month == date_initial.month)
 		  	 			splited_report[i] << item	  	 
 		  	 		end
 	  	 		end
 	  	 		i = i+1
-	  	 		date_initial = date_initial - i.month
   	 		end
-  	 		splited_report.reverse
+
 		else
 			##nada
 		end
