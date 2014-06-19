@@ -9,9 +9,8 @@ class Connectors::SftpConnector
 		json_pedidos_nuevos = []
 
 
-		#~~~~~ --X
-		i = 0
-		#~~~~~ --X
+		#~~~~~ TESTING:
+		i = 0 unless Rails.env.production?
 
 		#Si ya está en mi base de datos, ya lo procesamos
 		@sftpConn.dir.foreach("/home/grupo8/Pedidos") do |entry|
@@ -25,14 +24,14 @@ class Connectors::SftpConnector
 			   	if Date.new(fecha[0..3].to_i,fecha[5..6].to_i,fecha[8..9].to_i) <= Date.today
 		   			pedidos = hash["xml"]
 		   			pedidos["Pedidos"]["pedidoID"] = entry.name[7..-5]
-		   			json_pedidos_nuevos.push(pedidos.to_json.delete(' ')) 
-		   			#~~~~~ OrdersSftp.create(:name => entry.name) {TEMP} -->
+		   			json_pedidos_nuevos.push(pedidos.to_json.delete(' '))
+		   			
+		   			OrdersSftp.create(:name => entry.name) if Rails.env.production?
 		   		end
 	   		end
-	   		#~~~~~ --X
-	   		i == 10 ? break : i += 1
-	   		#~~~~~ --X
-	    end
+	   		#~~~~~ TESTING: Checkear solo 3 pedidos para facilitar testing
+	   		i == 3 ? break : i += 1 unless Rails.env.production?
+	   	end
 
 		if json_pedidos_nuevos.first.nil?
 			return nil
