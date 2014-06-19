@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140617025434) do
+ActiveRecord::Schema.define(version: 20140619143836) do
+
+  create_table "admins", force: true do |t|
+    t.string   "username"
+    t.string   "password_hash"
+    t.string   "password_salt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "almacens", force: true do |t|
     t.string   "name"
@@ -891,16 +899,6 @@ ActiveRecord::Schema.define(version: 20140617025434) do
   end
 
   create_table "twitter_connectors", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "twitter_modules", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "twitterapps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
