@@ -61,76 +61,79 @@ class Connectors::WarehouseConnector
     cantidad_acumulada = 0
     cantidad = cantidad.to_i
 
-    Autorizacion.all.each do |a|
-      if a.password_out? and a.grupo?
-        cantidad_a_pedir = (cantidad_acumulada < cantidad) ? (cantidad - cantidad_acumulada) : 0
-        if cantidad_a_pedir > 0
-          begin
-            warehouse_url = "http://integra"+a.grupo[a.grupo.length-1].to_s+".ing.puc.cl"
+    if Rails.env.production?
+      Autorizacion.all.each do |a|
+        if a.password_out? and a.grupo?
+          cantidad_a_pedir = (cantidad_acumulada < cantidad) ? (cantidad - cantidad_acumulada) : 0
+          if cantidad_a_pedir > 0
+            begin
+              warehouse_url = "http://integra"+a.grupo[a.grupo.length-1].to_s+".ing.puc.cl"
 
-            @conn_otra_bodega = Faraday.new(:url => warehouse_url) do |faraday|
-              faraday.request :json
-              faraday.response :logger   
-              faraday.response :json, :content_type => "application/json"               
-              faraday.adapter  Faraday.default_adapter  
-            end
-            if a.grupo == "grupo9"
+              @conn_otra_bodega = Faraday.new(:url => warehouse_url) do |faraday|
+                faraday.request :json
+                faraday.response :logger   
+                faraday.response :json, :content_type => "application/json"               
+                faraday.adapter  Faraday.default_adapter  
+              end
+              if a.grupo == "grupo9"
+                options = {
+                :path => "/api/pedirProducto/grupo8/#{a.password_out}/#{sku}",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :almacenId => Almacen.buscar("recepcion")["almacen_id"],
+                  :cantidad => cantidad_a_pedir
+                }
+              }
+              elsif a.grupo == "grupo5"
               options = {
-              :path => "/api/pedirProducto/grupo8/#{a.password_out}/#{sku}",
-              :warehouse_url => warehouse_url,
-              :params => {
-                :almacenId => Almacen.buscar("recepcion")["almacen_id"],
-                :cantidad => cantidad_a_pedir
+                :path => "/api/pedirProducto",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :usuario => "grupo8",
+                  :almacenId => Almacen.buscar("recepcion")["almacen_id"],
+                  :password => a.password_out,
+                  :sku => sku,
+                  :cantidad => cantidad_a_pedir
+                }
               }
-            }
-            elsif a.grupo == "grupo5"
-            options = {
-              :path => "/api/pedirProducto",
-              :warehouse_url => warehouse_url,
-              :params => {
-                :usuario => "grupo8",
-                :almacenId => Almacen.buscar("recepcion")["almacen_id"],
-                :password => a.password_out,
-                :sku => sku,
-                :cantidad => cantidad_a_pedir
+              elsif a.grupo == "grupo2"
+              options = {
+                :path => "/api/pedirProducto",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :usuario => "grupo8",
+                  :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
+                  :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
+                  :SKU => sku,
+                  :cantidad => cantidad_a_pedir
+                }
               }
-            }
-            elsif a.grupo == "grupo2"
-            options = {
-              :path => "/api/pedirProducto",
-              :warehouse_url => warehouse_url,
-              :params => {
-                :usuario => "grupo8",
-                :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
-                :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
-                :SKU => sku,
-                :cantidad => cantidad_a_pedir
+              else
+              options = {
+                :path => "/api/pedirProducto",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :usuario => "grupo8",
+                  :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
+                  :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
+                  :SKU => sku,
+                  :cantidad => cantidad_a_pedir
+                }
               }
-            }
-            else
-            options = {
-              :path => "/api/pedirProducto",
-              :warehouse_url => warehouse_url,
-              :params => {
-                :usuario => "grupo8",
-                :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
-                :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
-                :SKU => sku,
-                :cantidad => cantidad_a_pedir
-              }
-            }
+              end
+              respuesta = get_otra_bodega(options)
+              cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
+              cantidad_acumulada += cantidad_recibida
+            rescue => e
             end
-            respuesta = get_otra_bodega(options)
-            cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
-            cantidad_acumulada += cantidad_recibida
-          rescue => e
           end
         end
       end
+      json_response = {:cantidad_recibida => cantidad_acumulada }
+      return json_response
+    else
+      return { :cantidad_recibida => 0 }
     end
-
-    json_response = {:cantidad_recibida => cantidad_acumulada }
-    return json_response
   end
 
   def get_otra_bodega(options={})

@@ -31,6 +31,7 @@ class Price < ActiveRecord::Base
 		    id = value[1..-2].to_i
 		  	value = values[1]
 		    sku = value[1..-2].to_i
+		    ##Consulta que entrega el primer precio con esos atributos.....Observacíón:deberia haber solo uno
 		  	precio_actual = self.where("id = ? and sku = ?", id, sku.to_s).first
 
 		  	if(precio_actual.nil?)

@@ -41,6 +41,9 @@ class Order < ActiveRecord::Base
 		insert_report("Reporte_OrdenesIncorrectas",order)
 	end
 
+	def self.report_reposicion(replenish)
+		insert_report("Reporte_Reposicion",replenish)
+	end
 
 	##Metodos internos solo para probar los insert en Mongo
 
@@ -57,8 +60,7 @@ class Order < ActiveRecord::Base
 		@db     = mongo_client.db("mongodb")
 		coll = @db.collection(name)
 
-	end
-	
+	end	
 
 	
 end
