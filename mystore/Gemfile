@@ -83,6 +83,8 @@ gem 'whenever', :require => false
 #To connection with google drive
 gem 'google_drive'
 
+gem 'twitter'
+
 #To read microsoft access
 #gem 'mdb'
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140606195909) do
+ActiveRecord::Schema.define(version: 20140617025434) do
 
   create_table "almacens", force: true do |t|
     t.string   "name"
@@ -886,6 +886,21 @@ ActiveRecord::Schema.define(version: 20140606195909) do
   create_table "storehouses", force: true do |t|
     t.integer  "capacity"
     t.integer  "type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "twitter_connectors", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "twitter_modules", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "twitterapps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
