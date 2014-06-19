@@ -83,12 +83,6 @@ class OrdersManager < ActiveRecord::Base
 						Order.report_brokestock(reporte)
 					end
 				end
-				Rails.logger.info "Following report is for successful order delivery"
-				Rails.logger.info reporte
-				Rails.logger.info "Following report is for broken stock" if quiebre
-				Rails.logger.info reporte_quiebre if quiebre
-				#~~~~~ Order.report_sales(reporte) -->
-				#~~~~~ Order.report_brokestock(reporte_quiebre) if quiebre -->
 			else
 				Order.report_wrongorder(pedido)
 				Rails.logger.info "reporte ORDEN MAL: #{pedido}"
