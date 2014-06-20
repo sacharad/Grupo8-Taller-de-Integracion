@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140619143836) do
+ActiveRecord::Schema.define(version: 20140620204426) do
 
   create_table "admins", force: true do |t|
     t.string   "username"
@@ -99,6 +99,12 @@ ActiveRecord::Schema.define(version: 20140619143836) do
   end
 
   create_table "orders_sftps", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "orders_sprees", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -394,6 +400,11 @@ ActiveRecord::Schema.define(version: 20140619143836) do
   add_index "spree_orders", ["completed_at"], name: "index_spree_orders_on_completed_at"
   add_index "spree_orders", ["number"], name: "index_spree_orders_on_number"
   add_index "spree_orders", ["user_id"], name: "index_spree_orders_on_user_id"
+
+  create_table "spree_orders_connectors", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "spree_orders_promotions", id: false, force: true do |t|
     t.integer "order_id"
