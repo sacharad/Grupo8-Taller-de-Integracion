@@ -10,27 +10,37 @@
 
 #ejecuta metodo que lee reserva en spreadsheet y la ingresa a base de datos
 set :output, 'tmp/whenever.log'
-every 1.minute do
-  runner 'Reserve.log' , :environment => 'development'
-  runner 'Reserve.log', :environment => 'production' 
-end
+
 every 10.minute do
   runner "Product.vaciar_almacen_recepcion"
 end
+
+#Actualizar stock en almacenes
 every 12.hours do
   runner "Product.actualizarAlmacenes"
 end
 
-every :monday, :at => '6am' do
+#Actualización pricing
+every :day, :at => '6am' do
   runner "Linkdropbox.download_and_load_prices"
 end 
 
-every 1.hour do
+every 15.minutes do
  	runner "OrdersManager.fetchOrders" 
 end
 
 every 5.minutes do
  	runner "OrdersManager.fetchWeb" 
+end
+
+#Actualización nocturna de stock
+every :day, :at => '1am' do
+  runner "Product.asignar_stock"
+end
+
+#Promociones rabbit
+every 30.minutes do
+ 	runner "Product.actualizar_precios" 
 end
 
 # Example:
