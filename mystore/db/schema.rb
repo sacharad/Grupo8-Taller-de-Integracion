@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140617175237) do
+ActiveRecord::Schema.define(version: 20140620200057) do
 
   create_table "almacens", force: true do |t|
     t.string   "name"
@@ -62,10 +62,12 @@ ActiveRecord::Schema.define(version: 20140617175237) do
   create_table "oferta", force: true do |t|
     t.string   "sku"
     t.integer  "price"
-    t.time     "initial_date"
-    t.time     "due_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "initial_date"
+    t.datetime "due_date"
+    t.boolean  "iniciado",     default: false
+    t.boolean  "terminado",    default: false
   end
 
   create_table "order_products", force: true do |t|
