@@ -10,13 +10,17 @@
 
 #ejecuta metodo que lee reserva en spreadsheet y la ingresa a base de datos
 set :output, 'tmp/whenever.log'
+
 every 10.minute do
   runner "Product.vaciar_almacen_recepcion"
 end
+
+#Actualizar stock en almacenes
 every 12.hours do
   runner "Product.actualizarAlmacenes"
 end
 
+#Actualización pricing
 every :day, :at => '6am' do
   runner "Linkdropbox.download_and_load_prices"
 end 
