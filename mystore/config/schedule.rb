@@ -25,7 +25,7 @@ every :monday, :at => '6am' do
   runner "Linkdropbox.download_and_load_prices"
 end 
 
-every 10.minutes do
+every 1.hour do
  	runner "OrdersManager.fetchOrders" 
 end
 

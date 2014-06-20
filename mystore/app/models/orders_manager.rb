@@ -14,10 +14,9 @@ class OrdersManager < ActiveRecord::Base
 			return nil
 		end
 
-		pedidos_ftp.each do |p| #asumo son pedidos nuevos/no resueltos
+		pedidos_ftp.each do |p|
 			p = JSON.parse p
 			# Rails.logger.info "1 pedido['Pedidos']" + p['Pedidos'].to_s
-			#EN WINDOWS CAMBIAR ESTO POR: p[1]
 			pedido = p["Pedidos"]
 			# Rails.logger.info "2 pedido['Pedidos']" + pedido.to_s
 			vtiger_address = vtiger.getAddress(pedido["direccionId"])
@@ -52,8 +51,11 @@ class OrdersManager < ActiveRecord::Base
 						"direccion_despacho"  => info_pedido["direccion"]
 					}
 
-					Rails.logger.info "reporte ORDEN: #{reporte}"
-					Order.report_order(reporte)
+					begin
+						Order.report_order(reporte)
+					rescue Exception => e
+						Rails.logger.info "reporte ORDEN: #{reporte}"
+					end
 
 					if info_sku["Q_DESPACHO"] > 0
 						reporte["producto"]["cantidad"] = info_sku["Q_DESPACHO"]
@@ -69,24 +71,33 @@ class OrdersManager < ActiveRecord::Base
 								@warehouse.realizarDespacho(producto["_id"], info_pedido["direccion"], info_sku["precio"].to_i, pedido["pedidoID"])
 							end
 							Reserve.usarReserva(pedido["rut"], pedidos["sku"].to_i, [info_sku["reserva"].to_i, info_sku["Q_DESPACHO"].to_i].min)
-							Order.report_sales(reporte)
-							Rails.logger.info "reporte VENTA: #{reporte}"
+							Product.asignar_stock(pedidos["sku"], info_sku["Q_DESPACHO"])
 						rescue
+						end
+						begin
+							Order.report_sales(reporte)
+						rescue Exception => e
+							Rails.logger.info "reporte VENTA: #{reporte}"
 						end
 					end
 					if info_sku["Q_QUIEBRE"] > 0
 						reporte["producto"]["cantidad"] = info_sku["Q_QUIEBRE"]
 
 						reporte.except!("direccion_despacho")
-
-						Rails.logger.info "reporte QUIEBRE: #{reporte}"
-						Order.report_brokestock(reporte)
+						begin
+							Order.report_brokestock(reporte)
+						rescue
+							Rails.logger.info "reporte QUIEBRE: #{reporte}"
+						end
 					end
 				end
 
 			else
-				Order.report_wrongorder(pedido)
-				Rails.logger.info "reporte ORDEN MAL: #{pedido}"
+				begin
+					Order.report_wrongorder(pedido)					
+				rescue Exception => e
+					Rails.logger.info "reporte ORDEN MAL: #{pedido}"
+				end
 			end
 		end
 	end
@@ -94,12 +105,12 @@ class OrdersManager < ActiveRecord::Base
 	def self.checkPedido (rut, pedidos)
 		
 		stock = @warehouse.obtenerStock(pedidos["sku"])
-		total_res = 0
-		reserva_cliente = 0
 		begin
 			total_res = Reserve.getReservas(pedidos["sku"].to_i)
 			reserva_cliente = Reserve.getReserva(rut, pedidos["sku"].to_i)
 		rescue
+			total_res = 0
+			reserva_cliente = 0
 		end
 
 		res = [stock, total_res].min
@@ -116,10 +127,9 @@ class OrdersManager < ActiveRecord::Base
 			"precio" => precio
 		}
 
-		despachable = [stock - res + single_res, pedidos["cantidad"].to_i].min
+		despachable = [[stock - res + single_res, 0].max, pedidos["cantidad"].to_i].min
 		if despachable < pedidos["cantidad"].to_i
 
-			despachable = despachable < 0 ? 0 : despachable
 			begin
 				Rails.logger.info "Failed to supply order. Status for sku: stock #{stock}, Total reserve #{res}, Client reserve #{single_res}"
 				extra = @warehouse.pedirOtraBodega(pedidos["sku"], pedidos["cantidad"].to_i - despachable)[:cantidad_recibida]
@@ -130,7 +140,8 @@ class OrdersManager < ActiveRecord::Base
 			rescue
 			end
 		end
-
+		
+		despachable = despachable > pedidos["cantidad"].to_i ? pedidos["cantidad"].to_i : despachable
 		report["Q_DESPACHO"] = despachable
 		report["Q_QUIEBRE"] = pedidos["cantidad"].to_i - despachable
 
@@ -138,6 +149,8 @@ class OrdersManager < ActiveRecord::Base
 		
 		return report
 	end
+
+	# Métodos e-Commerce
 
 	def self.actualizarDisponibilidad (sku)
 		warehouse = Connectors::WarehouseConnector.new
@@ -155,40 +168,49 @@ class OrdersManager < ActiveRecord::Base
 		return json_response
 	end
 
-	def self.generarPedido (sku, cantidad)
+	def self.generarPedido (sku, cantidad, direccion, precio)
 		warehouse = Connectors::WarehouseConnector.new
 		
 		stock = warehouse.obtenerStock(sku)
-		total_res = Reserve.getReservas(sku.to_i)
-
-		#~~~~~ report = {} -->
+		begin
+			total_res = Reserve.getReservas(sku.to_i)
+		rescue Exception => e
+			total_res = 0
+		end
 
 		res = [stock, total_res].min
 
-		stock_dif = cantidad.to_i - stock + res
-		unless stock_dif <= 0
-			Rails.logger.info "Failed to supply order. Status for sku: stock #{stock}, Total reserve #{res}, Client reserve #{single_res}"
-			extra = warehouse.pedirOtraBodega(sku, stock_dif)[:cantidad_recibida]
-
-			unless stock_dif - extra <= 0
-				Rails.logger.info "Failed to retrieve enough stock from other warehouses. Needed #{stock_dif}, got #{extra}"
-				
-				json_response = {
-					:exito => false,
-					:cantidad_solicitada => cantidad
-				}
-				json_response[:cantidad_despachada] = stock_dif - extra <= cantidad ? cantidad - stock_dif : 0;
-				
-				return json_response
+		despachable = [[stock - res, 0].max, cantidad].min
+		if despachable < cantidad
+			begin
+				Rails.logger.info "Failed to supply order. Status for sku: stock #{stock}, Total reserve #{total_res}"
+				extra = warehouse.pedirOtraBodega(sku, cantidad - despachable)[:cantidad_recibida]
+				Rails.logger.info "Asked for #{cantidad} - #{despachable} stock, got: #{extra}"
+				despachable += extra
+			rescue
 			end
 		end
-		#~~~~~ self.Despachar -->
+
+		#~~~~~ self.despachar -->
+		begin
+			Rails.logger.info "Attempting to ship order..."
+
+			productos = warehouse.getStock(Almacen.buscar("general")["almacen_id"], sku)
+			productos = productos.nil? ? 0 : productos.take(despachable)
+
+			productos.each do |producto|
+				warehouse.realizarDespacho(producto["_id"], direccion, precio.to_i, "pedido_web")
+			end
+			Product.asignar_stock(sku, despachable)
+		rescue
+		end
 		json_response = {
-			:exito => true,
+			:exito => despachable == cantidad ? true : false,
 			:cantidad_solicitada  => cantidad,
-			:cantidad_despachada => cantidad
+			:cantidad_despachada => despachable
 		}
 
+		Rails.logger.info "Response: #{json_response}"
 		return json_response
 	end
 end
