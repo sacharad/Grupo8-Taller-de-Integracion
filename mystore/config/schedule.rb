@@ -29,6 +29,10 @@ every 1.hour do
  	runner "OrdersManager.fetchOrders" 
 end
 
+every 5.minutes do
+ 	runner "OrdersManager.fetchWeb" 
+end
+
 # Example:
 #
 # set :output, "/path/to/my/cron_log.log"
