@@ -30,9 +30,10 @@
           <li><a href="<%= spree_path %>">eCommerce</a></li>
           <li><a href="<%= api_docs_path %>">Documantación API</a></li>
           <%if !current_user%>
-          <li><%= link_to "Log in", log_in_path%></li>
+          <li><%= link_to "Log in", log_in_path %></li>
           <%else%>
           <li><a href="">Buena <%= current_user.username %></a></li>
+          <li><%= link_to "Log out", log_out_path %></li>
           <%end%>
       </ul>
       <ul class="nav navbar-nav navbar-right">

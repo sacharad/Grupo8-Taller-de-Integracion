@@ -1,5 +1,6 @@
 class DashboardController < ApplicationController
    respond_to :html, :json
+   before_action :force_login
   def index
   	@quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
   	@pedidos = Order.get_collection("InfoPedidos").count.to_f

@@ -1,5 +1,6 @@
 class OrdersSftpsController < ApplicationController
   before_action :set_orders_sftp, only: [:show, :edit, :update, :destroy]
+  before_action :force_login
 
   # GET /orders_sftps
   # GET /orders_sftps.json

@@ -1,5 +1,6 @@
 class StorehousesController < ApplicationController
   before_action :set_storehouse, only: [:show, :edit, :update, :destroy]
+  before_action :force_login
 
   # GET /storehouses
   # GET /storehouses.json

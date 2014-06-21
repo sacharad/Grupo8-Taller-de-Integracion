@@ -1,4 +1,7 @@
 class WarehouseController < ApplicationController
+  before_action :force_login
+
+  
   def index
     conn = Connectors::WarehouseConnector.new
     @almacenes = conn.getAlmacenes()

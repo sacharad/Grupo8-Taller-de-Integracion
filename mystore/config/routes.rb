@@ -1,8 +1,9 @@
 Mystore::Application.routes.draw do
 
-  resources :sessions
+
   resources :admins
   get "log_in" => "sessions#new", :as => "log_in"
+  get "log_out" => "sessions#destroy", :as => "log_out"
 
   mount Spree::Core::Engine, :at => '/ecommerce'
 
@@ -37,7 +38,7 @@ Mystore::Application.routes.draw do
     match "/pedirProducto" => "api#despachar_producto_otra_bodega", via: [:post]
   end
 
-
+  resources :sessions
 
   # This line mounts Spree's routes at the root of your application.
   # This means, any requests to URLs such as /products, will go to Spree::ProductsController.
