@@ -1,6 +1,5 @@
 <script type="text/javascript">
 $(function () {
-    /*nav_btns*/
     $(".nav_btn").on("click", function(e){
         e.preventDefault();
         var id = $(this).attr("href");
@@ -18,11 +17,11 @@ $(function () {
     /*FIN nav_btns*/
         $('#sales_chart').highcharts({
             title: {
-                text: 'Monthly Average Temperature',
+                text: 'Ventas',
                 x: -20 //center
             },
             subtitle: {
-                text: 'Source: WorldClimate.com',
+                text: 'Semana',
                 x: -20
             },
             xAxis: {

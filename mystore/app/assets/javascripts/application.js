@@ -15,4 +15,5 @@
 //= require turbolinks
 //= require bootstrap
 //= require highcharts
+//= require d3
 //= require_tree .
