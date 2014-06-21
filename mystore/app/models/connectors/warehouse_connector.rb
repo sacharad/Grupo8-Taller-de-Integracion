@@ -84,6 +84,18 @@ class Connectors::WarehouseConnector
                   :cantidad => cantidad_a_pedir
                 }
               }
+              elsif a.grupo == "grupo4"
+              options = {
+                :path => "/api/pedirProducto",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :usuario => "grupo8",
+                  :almacenId => Almacen.buscar("recepcion")["almacen_id"],
+                  :password => Digest::SHA1.hexdigest a.password_out,
+                  :sku => sku,
+                  :cantidad => cantidad_a_pedir
+                }
+              }
               elsif a.grupo == "grupo5"
               options = {
                 :path => "/api/pedirProducto",
