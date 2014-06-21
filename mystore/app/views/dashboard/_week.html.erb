@@ -15,22 +15,31 @@ $(function () {
     });
     $("#map_canvas").height($( window ).height()-50-150);
     /*FIN nav_btns*/
+    var ventas_categories_x = []
+    var ventas_y = []
+    for(i in ventas){
+        ventas_categories_x.push(ventas[i].fecha);
+        var acumulado_venta = 0
+        for(j in ventas[i].datos){
+            acumulado_venta += ventas[i].datos[j].precio_venta;
+        }
+        ventas_y.push(acumulado_venta);
+    }
         $('#sales_chart').highcharts({
             title: {
                 text: 'Ventas',
                 x: -20 //center
             },
             subtitle: {
-                text: 'Semana',
+                text: 'Última Semana',
                 x: -20
             },
             xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                categories: ventas_categories_x
             },
             yAxis: {
                 title: {
-                    text: 'Temperature (°C)'
+                    text: '$'
                 },
                 plotLines: [{
                     value: 0,
@@ -39,7 +48,7 @@ $(function () {
                 }]
             },
             tooltip: {
-                valueSuffix: '°C'
+                valuePrefix: '$ '
             },
             legend: {
                 layout: 'vertical',
@@ -48,37 +57,33 @@ $(function () {
                 borderWidth: 0
             },
             series: [{
-                name: 'Tokyo',
-                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-            }, {
-                name: 'New York',
-                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
-            }, {
-                name: 'Berlin',
-                data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
-            }, {
-                name: 'London',
-                data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+                name: 'Ventas',
+                data: ventas_y,
+                color: '#4CC668'
             }]
         });
 /*FIN Sales Chart*/
-
+    var pedidos_categories_x = []
+    var pedidos_y = []
+    for(i in pedidos){
+        pedidos_categories_x.push(pedidos[i].fecha);
+        pedidos_y.push(pedidos[i].datos.length);
+    }
 $('#fulfilled_orders_chart').highcharts({
             title: {
-                text: 'Monthly Average Temperature',
+                text: 'Cantidad de Pedidos',
                 x: -20 //center
             },
             subtitle: {
-                text: 'Source: WorldClimate.com',
+                text: 'Última Semana',
                 x: -20
             },
             xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                categories: pedidos_categories_x
             },
             yAxis: {
                 title: {
-                    text: 'Temperature (°C)'
+                    text: 'Cantidad'
                 },
                 plotLines: [{
                     value: 0,
@@ -87,7 +92,7 @@ $('#fulfilled_orders_chart').highcharts({
                 }]
             },
             tooltip: {
-                valueSuffix: '°C'
+                valueSuffix: ' '
             },
             legend: {
                 layout: 'vertical',
@@ -96,37 +101,34 @@ $('#fulfilled_orders_chart').highcharts({
                 borderWidth: 0
             },
             series: [{
-                name: 'Tokyo',
-                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-            }, {
-                name: 'New York',
-                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
-            }, {
-                name: 'Berlin',
-                data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
-            }, {
-                name: 'London',
-                data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+                name: 'Pedidos',
+                data: pedidos_y,
+                color: '#4A92E4'
             }]
         });
 
 /*FIN Pedidos Realizados*/
+    var pedidos_quebrados_categories_x = []
+    var pedidos_quebrados_y = []
+    for(i in quiebres){
+        pedidos_quebrados_categories_x.push(quiebres[i].fecha);
+        pedidos_quebrados_y.push(quiebres[i].datos.length);
+    }
 $('#broken_orders_chart').highcharts({
             title: {
-                text: 'Monthly Average Temperature',
+                text: 'Cantidad de Pedidos Quebrados',
                 x: -20 //center
             },
             subtitle: {
-                text: 'Source: WorldClimate.com',
+                text: 'Última Semana',
                 x: -20
             },
             xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                categories: pedidos_quebrados_categories_x
             },
             yAxis: {
                 title: {
-                    text: 'Temperature (°C)'
+                    text: 'Cantidad'
                 },
                 plotLines: [{
                     value: 0,
@@ -135,7 +137,7 @@ $('#broken_orders_chart').highcharts({
                 }]
             },
             tooltip: {
-                valueSuffix: '°C'
+                valueSuffix: ''
             },
             legend: {
                 layout: 'vertical',
@@ -144,41 +146,41 @@ $('#broken_orders_chart').highcharts({
                 borderWidth: 0
             },
             series: [{
-                name: 'Tokyo',
-                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-            }, {
-                name: 'New York',
-                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
-            }, {
-                name: 'Berlin',
-                data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
-            }, {
-                name: 'London',
-                data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+                name: 'Quiebres',
+                data: pedidos_quebrados_y,
+                color: '#FF6262'
             }]
         });
 /*FIN pedidos quebrados*/
 /*Productos mas vendidos*/
+    var ranking_productos_vendidos_categories_x = []
+    var ranking_productos_vendidos_y = []
+    for(i in ranking_productos_vendidos){
+        ranking_productos_vendidos_categories_x.push(ranking_productos_vendidos[i][0]);
+        ranking_productos_vendidos_y.push(ranking_productos_vendidos[i][1]);
+    }
  $('#top_sellers_chart').highcharts({
             chart: {
                 type: 'bar'
             },
             title: {
-                text: 'Historic World Population by Region'
+                text: 'Ranking 10 Productos Más Vendidos'
             },
             subtitle: {
-                text: 'Source: Wikipedia.org'
+                text: ''
             },
             xAxis: {
-                categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+                categories: ranking_productos_vendidos_categories_x,
                 title: {
                     text: null
                 }
             },
             yAxis: {
+                minorGridLineWidth: 2,
+                allowDecimals:false,
                 min: 0,
                 title: {
-                    text: 'Population (millions)',
+                    text: 'Cantidad de Ventas',
                     align: 'high'
                 },
                 labels: {
@@ -186,7 +188,7 @@ $('#broken_orders_chart').highcharts({
                 }
             },
             tooltip: {
-                valueSuffix: ' millions'
+                valuePrefix: 'Sku: '
             },
             plotOptions: {
                 bar: {
@@ -210,32 +212,41 @@ $('#broken_orders_chart').highcharts({
                 enabled: false
             },
             series: [{
-                name: 'Year 2008',
-                data: [973, 914, 4054, 732, 34]
+                name: 'Última Semana',
+                data: ranking_productos_vendidos_y,
+                color: "#E48D4A"
             }]
         });
 /* FIN productos mas vendidos*/
 /* Productos mas quebrados*/
+    var ranking_productos_quebrados_categories_x = []
+    var ranking_productos_quebrados_y = []
+    for(i in ranking_productos_quebrados){
+        ranking_productos_quebrados_categories_x.push(ranking_productos_quebrados[i][0]);
+        ranking_productos_quebrados_y.push(ranking_productos_quebrados[i][1]);
+    }
  $('#top_broken_chart').highcharts({
             chart: {
                 type: 'bar'
             },
             title: {
-                text: 'Historic World Population by Region'
+                text: 'Ranking 10 Productos Más Quebrados'
             },
             subtitle: {
-                text: 'Source: Wikipedia.org'
+                text: ''
             },
             xAxis: {
-                categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+                categories: ranking_productos_quebrados_categories_x,
                 title: {
                     text: null
                 }
             },
             yAxis: {
+                minorGridLineWidth: 2,
+                allowDecimals:false,
                 min: 0,
                 title: {
-                    text: 'Population (millions)',
+                    text: 'Cantidad de Quiebres',
                     align: 'high'
                 },
                 labels: {
@@ -243,7 +254,7 @@ $('#broken_orders_chart').highcharts({
                 }
             },
             tooltip: {
-                valueSuffix: ' millions'
+                valuePrefix: 'Sku: '
             },
             plotOptions: {
                 bar: {
@@ -267,32 +278,41 @@ $('#broken_orders_chart').highcharts({
                 enabled: false
             },
             series: [{
-                name: 'Year 2008',
-                data: [973, 914, 4054, 732, 34]
+                name: 'Última Semana',
+                data: ranking_productos_quebrados_y,
+                color: "#4AE4CD"
             }]
         });
 /*FIN productos mas quebrados*/
 /* Clientes que mas han comprado*/
+     var ranking_clientes_categories_x = []
+    var ranking_clientes_y = []
+    for(i in ranking_clientes){
+        ranking_clientes_categories_x.push(ranking_clientes[i][0]);
+        ranking_clientes_y.push(ranking_clientes[i][1]);
+    }
  $('#top_buyers_chart').highcharts({
             chart: {
                 type: 'bar'
             },
             title: {
-                text: 'Historic World Population by Region'
+                text: 'Ranking 10 Mejores Clientes'
             },
             subtitle: {
-                text: 'Source: Wikipedia.org'
+                text: 'Cantidad de Compras'
             },
             xAxis: {
-                categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+                categories: ranking_clientes_categories_x,
                 title: {
                     text: null
                 }
             },
             yAxis: {
+                minorGridLineWidth: 2,
+                allowDecimals:false,
                 min: 0,
                 title: {
-                    text: 'Population (millions)',
+                    text: '',
                     align: 'high'
                 },
                 labels: {
@@ -300,7 +320,7 @@ $('#broken_orders_chart').highcharts({
                 }
             },
             tooltip: {
-                valueSuffix: ' millions'
+                valuePrefix: ''
             },
             plotOptions: {
                 bar: {
@@ -324,13 +344,14 @@ $('#broken_orders_chart').highcharts({
                 enabled: false
             },
             series: [{
-                name: 'Year 2008',
-                data: [973, 914, 4054, 732, 34]
+                name: 'Última Semana',
+                data: ranking_clientes_y,
+                color: "#DA6BE0"
             }]
         });
 /*FIN clientes que mas han comprado*/
 
-
+    load_order_points(pedidos);
 
 /*FIN Jquery*/
     });

@@ -6,6 +6,7 @@
     src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBwNVUZgov8CQrXbgaDf2wuEBVlnSXovs4&sensor=false&libraries=drawing,geometry">
   </script>
   <title>TINT Grupo8</title>
+  <%= include_gon(:init => true) %>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
