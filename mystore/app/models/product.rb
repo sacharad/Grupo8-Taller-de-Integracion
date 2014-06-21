@@ -139,12 +139,13 @@ end
       if promo.iniciado==false and promo.initial_date<DateTime.now and promo.due_date>DateTime.now then
         puts promo.sku
         promo.iniciado=true
-        change_price(promo.sku,promo.price)
-        promo.save
-        product_id=Spree::Variant.find_by_sku(promo.sku).product_id
-        producto=Spree::Product.find(product_id)
-        mensaje="Disfruta la promoción "+producto.name+ " a $"#promo.price.to_s
-        #Connectors::TwitterConnector.enviarMensaje(mensaje)
+        if Spree::Variant.find_by_sku(promo.sku)!=nil
+          change_price(promo.sku,promo.price)
+          promo.save
+          producto=Spree::Product.find(product_id)
+          mensaje="Disfruta la promoción "+producto.name+ " a $"+promo.price.to_s
+          Connectors::TwitterConnector.enviarMensaje(mensaje)
+        end
       end
     end
   end

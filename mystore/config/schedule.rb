@@ -43,6 +43,12 @@ every 30.minutes do
  	runner "Product.actualizar_precios" 
 end
 
+#Leer rabbit
+every 1.hour do
+ 	runner "Rabbitmq.ofertas" 
+end
+
+
 # Example:
 #
 # set :output, "/path/to/my/cron_log.log"
