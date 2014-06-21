@@ -27,6 +27,27 @@ class DashboardController < ApplicationController
   	 @list_hash = Order.get_report("Reporte_OrdenesIncorrectas") 
   	  	
   end
+  def total
+    @quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
+    @pedidos = Order.get_collection("InfoPedidos").count.to_f
+    @ventas = Order.get_collection("Reporte_Ventas").count.to_f
+    @pedidos_incorrectos = Order.get_collection("Reporte_OrdenesIncorrectas").count.to_f
+    render 'total'
+  end
+  def year
+    @quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
+    @pedidos = Order.get_collection("InfoPedidos").count.to_f
+    @ventas = Order.get_collection("Reporte_Ventas").count.to_f
+    @pedidos_incorrectos = Order.get_collection("Reporte_OrdenesIncorrectas").count.to_f
+    render 'year'
+  end
+  def month
+    @quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
+    @pedidos = Order.get_collection("InfoPedidos").count.to_f
+    @ventas = Order.get_collection("Reporte_Ventas").count.to_f
+    @pedidos_incorrectos = Order.get_collection("Reporte_OrdenesIncorrectas").count.to_f
+    render 'month'
+  end
   def week
     @quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
     @pedidos = Order.get_collection("InfoPedidos").count.to_f
@@ -34,6 +55,5 @@ class DashboardController < ApplicationController
     @pedidos_incorrectos = Order.get_collection("Reporte_OrdenesIncorrectas").count.to_f
     render 'week'
   end
- 
 
 end

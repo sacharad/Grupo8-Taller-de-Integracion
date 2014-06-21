@@ -30,9 +30,16 @@ class ApiController < ApplicationController
     else
       autorizacion_grupo = Autorizacion.find_by_grupo(grupo)
       password_grupo = autorizacion_grupo.password_in
-      password_sha1_generado = Base64.encode64(Digest::HMAC.digest(password_grupo, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1))
-      if password_sha1_recibido != password_sha1_generado
-        render :json => [:error => "Contraseña incorrecta."].to_json and return
+      if grupo == "grupo2"
+        password_sha1_generado = Digest::SHA1.hexdigest password_grupo
+        if password_sha1_recibido != password_sha1_generado
+          render :json => [:error => "Contraseña incorrecta."].to_json and return
+        end
+      else
+        password_sha1_generado = Base64.encode64(Digest::HMAC.digest(password_grupo, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1))
+        if password_sha1_recibido != password_sha1_generado
+          render :json => [:error => "Contraseña incorrecta."].to_json and return
+        end
       end
     end
     #-----Comienzo envío de productos a bodega externa ------
