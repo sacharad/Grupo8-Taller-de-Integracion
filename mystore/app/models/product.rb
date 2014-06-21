@@ -21,6 +21,7 @@ class Product < ActiveRecord::Base
 	end	
 
   def self.loadSpree(file)
+    Spree::Config.set(:products_per_page => 28)
     self.load(file)
     tax_1=Spree::Taxonomy.create(name: "Marca")
     tax_2=Spree::Taxonomy.create(name: "Categoría")
@@ -42,19 +43,24 @@ class Product < ActiveRecord::Base
       Spree::Image.create({:attachment => open(URI.parse(item['imagen'])),:viewable => producto.master})
     end
     setear_backorder
+    setear_categoria
   end 
 
 #------------------------------Metodos Spree----------------------------------------------------
 
   def self.setear_categoria
+    i=0
     Spree::Taxon.all.each do |tipo|
-      if tipo.name!='Marca' or tipo.name!='Categoria' and tipo.taxonomy_id==1
-        tipo.parent_id=1
-        tipo.save
-      elsif tipo.id!=1 and tipo.id!=2 and tipo.taxonomy_id==2
-        tipo.parent_id=2
-        tipo.save
-      end  
+      if i>4 
+        if tipo.name!='Marca' or tipo.name!='Categoria' and tipo.taxonomy_id==1 and tipo.parent_id==nil
+          tipo.parent_id=1
+          tipo.save
+        elsif tipo.id!=1 and tipo.id!=2 and tipo.taxonomy_id==2 and tipo.parent_id==nil
+          tipo.parent_id=2
+          tipo.save
+        end
+      end
+      i+=1
     end
   end
 
@@ -74,6 +80,31 @@ class Product < ActiveRecord::Base
     producto.save
   end
 
+  #aActualiza stock Spree para todos los productos
+  def self.asignar_stock
+    Spree::Variant.all.each do |producto|
+      stock=Spree::StockItem.find_by_variant_id(producto.id)
+      cantidad=OrdersManager.actualizarDisponibilidad(producto.sku)[:stock]
+      Spree::StockMovement.create(stock_item_id:stock.id,quantity:-stock.count_on_hand)
+      Spree::StockMovement.create(stock_item_id:stock.id,quantity:cantidad)
+      actualizar_stock_producto(producto.sku)
+    end
+  end
+
+#Actualiza stock Spree para un producto cuando este ya ha sido consumido por ftp. 
+#Le pasas cantidad consumida del sku en el pedido.
+def self.asignar_stock(sku,cantidad)
+    producto=Spree::Variant.find_by_sku(sku)
+    stock=Spree::StockItem.find_by_variant_id(producto.id)
+    if stock.count_on_hand-cantidad>0
+      Spree::StockMovement.create(stock_item_id:stock.id,quantity:-cantidad)
+    else
+      Spree::StockMovement.create(stock_item_id:stock.id,quantity:-stock.count_on_hand)
+    end
+    actualizar_stock_producto(producto.sku)
+end
+
+
   #Metodo que cambia el precio de un producto en spree
   def self.change_price(sku,price)
     product_id=Spree::Variant.find_by_sku(sku).product_id
@@ -90,6 +121,36 @@ class Product < ActiveRecord::Base
     producto.save
   end
 
+  #Metodo que revisa las promociones y actualiza los precios
+  def self.actualizar_precios
+    Oferta.all.each do |promo|
+      if promo.iniciado==true and promo.terminado==false and promo.due_date<DateTime.now then
+        promo.terminado=true
+        promo.save
+        terminar_promocion(promo.sku)
+      end
+    end
+    Oferta.all.each do |promo|
+      if promo.iniciado==false and promo.initial_date<DateTime.now and promo.due_date<DateTime.now then
+        promo.iniciado=true
+        promo.terminado=true
+        promo.save
+      end
+      if promo.iniciado==false and promo.initial_date<DateTime.now and promo.due_date>DateTime.now then
+        puts promo.sku
+        promo.iniciado=true
+        if Spree::Variant.find_by_sku(promo.sku)!=nil
+          change_price(promo.sku,promo.price)
+          promo.save
+          producto=Spree::Product.find(product_id)
+          mensaje="Disfruta la promoción "+producto.name+ " a $"+promo.price.to_s
+          Connectors::TwitterConnector.enviarMensaje(mensaje)
+        end
+      end
+    end
+  end
+
+  
   def self.setear_backorder
     Spree::StockItem.all.each do |item|
       item.backorderable=false
@@ -97,7 +158,7 @@ class Product < ActiveRecord::Base
     end
   end
 
-
+#------------------------------------------------------------------------------------------------
 	def self.vaciar_almacen_recepcion
     Rails.logger.info "STARTING clearance of almacen de recepcion"
     conn = Connectors::WarehouseConnector.new

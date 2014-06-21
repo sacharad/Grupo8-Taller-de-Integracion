@@ -37,12 +37,12 @@ class Connectors::SpreeOrdersConnector < ActiveRecord::Base
 							"sku" => sku, "cantidad" => cantidad, "precio" => precio
 						}
 					end
-					array_pedido["Pedido"]=sku_array
+					array_pedido["Pedidos"]["Pedido"]=sku_array
 					hash.push(array_pedido)
-					OrdersSpree.create(:name => f.number)
+					OrdersSpree.create(:name => f.number) if Rails.env.production?
 				end
 			end
-			return hash.to_json
+			return hash
 		end
 
 	end

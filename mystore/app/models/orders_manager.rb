@@ -1,8 +1,8 @@
 class OrdersManager < ActiveRecord::Base
 
 	def self.fetchWeb
-		#pedidos = getPedidosWeb()
-		#process(pedidos, "WEB")
+		pedidos = Connectors::SpreeOrdersConnector.spree_fetch_orders()
+		process(pedidos, "WEB")
 	end
 
 	def self.fetchOrders
@@ -37,18 +37,22 @@ class OrdersManager < ActiveRecord::Base
 				return nil
 			end
 
+			Rails.logger.info lista_pedidos
+
 			lista_pedidos.each do |p|
-				p = JSON.parse p
+				Rails.logger.info p
+				#p = JSON.parse p
 				# Rails.logger.info "1 pedido['Pedidos']" + p['Pedidos'].to_s
 				pedido = p["Pedidos"]
 				# Rails.logger.info "2 pedido['Pedidos']" + pedido.to_s
 
 				info_pedido = {
 					"pedidoID" => pedido["pedidoID"], 
-					"fecha" => pedido["fecha"][1],
 					"hora" => pedido["hora"],
 					"rut" => pedido["rut"]
 				}
+
+				info_pedido["fecha"] = tipo == "FTP" ? pedido["fecha"][1] : pedido["fecha"]
 
 				ejecutar = true
 
@@ -66,6 +70,8 @@ class OrdersManager < ActiveRecord::Base
 				end
 
 				if ejecutar
+					Rails.logger.info pedido
+					Rails.logger.info pedido["Pedido"]
 					pedido["Pedido"].each do |pedidos|
 						info_sku = checkPedido(pedido["rut"], pedidos, tipo)
 

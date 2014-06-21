@@ -1,47 +1,14 @@
 <h1>Dashboard</h1>
 
-<div class= "well well-small">
-	<%= link_to "#" do %>
-		<h4>Pedidos totales: <%= @pedidos %></h4>
-	<%end%>
+<div class="row">
+	<div class="col-md-4 col-md-offset-2">
+		<div class="btn btn-default btn-large"><a href="<%= dashboard_total_path %>">Total</a></div>
+		<div class="btn btn-default btn-large"><a href="<%= dashboard_year_path %>">Ultimo Año</a></div>
+		<div class="btn btn-default btn-large"><a href="<%= dashboard_month_path %>">Ultimo Mes</a></div>
+		<div class="btn btn-default btn-large"><a href="<%= dashboard_week_path %>">Ultima Semana</a></div>
 </div>
- <table class="table table-hover">
- 	<thead>
-	  <th><h4>Reporte</h4></th>
-	  <th><h4>Cantidad</h4></th>
-	  <th><h4>KPI(%)</h4></th>
-	  <th><h4>Forma calculo</h4></th>
-	  <th></th>
-	</tr>
-	</thead>
-	<tbody>
-	  <th><h5>Quiebres de Stocks</h5></th>
-	  <th><h5><%= @quiebres %></h5></th>
-	  <th><h5><%= @quiebres/@pedidos %></h5></th>
-	  <th><h5>Quiebre Stock/TotalPedidos</h5></th>
-	  <th> <%= link_to 'Details', show_brokestock_path, :class => 'btn btn-info' %> </th>
-	</tbody>
-	<tbody>
-	  <th><h5>Ventas efectivas</h5></th>
-	  <th><h5><%= @ventas%></h5></th>
-	  <th><h5><%= @ventas/@pedidos %></h5></th>	  
-	  <th><h5>Ventas/TotalPedidos</h5></th>
-	  <th> <%= link_to 'Details', show_sales_path, :class => 'btn btn-info' %> </th>
-	</tbody>
-	<tbody>
-	  <th><h5>Pedidos incorrectos procesados</h5></th>
-	  <th><h5><%= @pedidos_incorrectos%></h5></th>
-	  <th><h5><%= @pedidos_incorrectos/@pedidos%></h5></th>	  
-	  <th><h5>Incorrectos/TotalPedidos</h5></th>
-	  <th> <%= link_to 'Details', show_wrongorders_path, :class => 'btn btn-info' %> </th>
-	</tbody>
-</table> 
 
-<div id="map_show" class="row-fluid"> <!-- Fila superior donde va ubicado el mapa principal -->
-  <div class="well well-large mapa"> <!-- Caja donde va el mapa principal -->
-    <div id="map_canvas" data-map-output="map">
-      <%= render 'maps' %>
-    </div>
-  </div>
+
 </div>
+
 
