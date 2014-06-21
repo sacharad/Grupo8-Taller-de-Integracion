@@ -102,6 +102,8 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     colorize (0.7.3)
+    d3-rails (3.4.4)
+      railties (>= 3.1)
     debug_inspector (0.0.2)
     deface (1.0.0)
       colorize (>= 0.5.8)
@@ -127,9 +129,6 @@ GEM
     ffaker (1.24.0)
     friendly_id (5.0.3)
       activerecord (>= 4.0.0)
-    gon (5.0.4)
-      actionpack (>= 2.3.0)
-      json
     google_drive (0.3.9)
       nokogiri (>= 1.4.4, != 1.5.2, != 1.5.1)
       oauth (>= 0.3.6)
@@ -356,10 +355,10 @@ DEPENDENCIES
   bson_ext
   bunny
   coffee-rails (~> 4.0.0)
+  d3-rails
   dropbox-sdk
   faraday
   faraday_middleware
-  gon
   google_drive
   highcharts-rails (~> 4.0.1)
   httparty

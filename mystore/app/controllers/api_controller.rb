@@ -35,6 +35,11 @@ class ApiController < ApplicationController
         if password_sha1_recibido != password_sha1_generado
           render :json => [:error => "Contraseña incorrecta."].to_json and return
         end
+      elsif grupo == "grupo9"
+        password_sha1_generado = password_grupo
+        if password_sha1_recibido != password_sha1_generado
+          render :json => [:error => "Contraseña incorrecta."].to_json and return
+        end
       else
         password_sha1_generado = Base64.encode64(Digest::HMAC.digest(password_grupo, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1))
         if password_sha1_recibido != password_sha1_generado
