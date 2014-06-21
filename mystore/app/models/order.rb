@@ -73,7 +73,11 @@ class Order < ActiveRecord::Base
 		hash["dia"] = ranking_clients(name_queue, "day")
 		return hash
 	end
-
+	#InfoPedidos
+	#Reporte_Ventas
+	#Reporte_QuiebresStock
+	#Reporte_OrdenesIncorrectas
+	#Reporte_Reposicion
 	def self.split_report_for(name_queue, option)
 		splited_report= []
 		if(option == "week_days")

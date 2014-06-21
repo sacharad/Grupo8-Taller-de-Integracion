@@ -28,9 +28,14 @@ Mystore::Application.routes.draw do
   get '/dashboard/show_brokestock', to:'dashboard#show_brokestock', as: 'show_brokestock'
   get '/dashboard/show_wrongorders', to:'dashboard#show_wrongorders', as: 'show_wrongorders'
   get '/dashboard/show_graph', to:'dashboard#show_graph', as: 'show_graph'
+  get '/dashboard/total', to:'dashboard#total', as: 'dashboard_total'
+  get '/dashboard/week', to:'dashboard#week', as: 'dashboard_week'
+  get '/dashboard/month', to:'dashboard#month', as: 'dashboard_month'
+  get '/dashboard/year', to:'dashboard#year', as: 'dashboard_year'
   get '/bodega/almacenes', to: 'warehouse#index', as:'bodega'
   get '/bodega/almacenes/:almacen_id', to: 'warehouse#almacen', as:'almacen'
   get '/bodega/almacenes/:almacen_id/sku/:sku_id', to: 'warehouse#sku', as:'sku'
+
 
   scope :path => "/api" do
     get "/" => 'api#index', as: 'api_docs'
