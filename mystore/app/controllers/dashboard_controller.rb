@@ -51,10 +51,12 @@ class DashboardController < ApplicationController
     render 'month'
   end
   def week
-    @quiebres = ActiveSupport::JSON.decode(Order.split_report_for("Reporte_QuiebresStock", "week_days").to_json)
-    @pedidos = ActiveSupport::JSON.decode(Order.split_report_for("InfoPedidos", "week_days").to_json)
-    @ventas = ActiveSupport::JSON.decode(Order.split_report_for("Reporte_Ventas", "week_days").to_json)
-    @pedidos_incorrectos = ActiveSupport::JSON.decode(Order.split_report_for("Reporte_OrdenesIncorrectas", "week_days").to_json)
+    gon.quiebres = Order.split_report_for("Reporte_QuiebresStock", "week_days")
+    gon.pedidos = Order.split_report_for("InfoPedidos", "week_days")
+    gon.ventas = Order.split_report_for("Reporte_Ventas", "week_days")
+    gon.ranking_productos_quebrados = Order.ranking_products("Reporte_QuiebresStock","week").take(10)
+    gon.ranking_productos_vendidos = Order.ranking_products("Reporte_Ventas","week").take(10)
+    gon.ranking_clientes = Order.ranking_clients("Reporte_Ventas","week").take(10)
     render 'week'
   end
 

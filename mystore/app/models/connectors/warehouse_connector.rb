@@ -122,7 +122,14 @@ class Connectors::WarehouseConnector
               }
               end
               respuesta = get_otra_bodega(options)
-              cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
+              cantidad_recibida = 0
+              if a.grupo == "grupo9"
+                unless respuesta.nil? or respuesta["status"] != "200"
+                  cantidad_recibida = respuesta["response"]["cantidad"].to_i
+                end
+              else
+                cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
+              end
               cantidad_acumulada += cantidad_recibida
             rescue => e
             end

@@ -49,10 +49,10 @@ class Order < ActiveRecord::Base
 	def self.get_complete_report(name_queue)
 		hash = Hash.new
 		hash["totales"] = get_report(name_queue)
-		hash["ano"] = get_report_by_date(name_queue, "year")
-		hash["mes"] = get_report_by_date(name_queue, "month")
-		hash["semana"] = get_report_by_date(name_queue, "week")
-		hash["dia"] = get_report_by_date(name_queue, "day")
+		hash["ano"] = filter_report_for(name_queue, "year")
+		hash["mes"] = filter_report_for(name_queue, "month")
+		hash["semana"] = filter_report_for(name_queue, "week")
+		hash["dia"] = filter_report_for(name_queue, "day")
 		return hash
 	end
 	def self.get_complete_ranking_products(name_queue)
@@ -201,7 +201,7 @@ class Order < ActiveRecord::Base
 		if(filter == "totales")
 			ventas = get_report(name_queue)
 		else
-			ventas = get_report_by_date(name_queue, filter)
+			ventas = filter_report_for(name_queue, filter)
 		end
 		hash = Hash.new
 		ventas.each do |venta|
@@ -219,7 +219,7 @@ class Order < ActiveRecord::Base
 		if(filter == "totales")
 			ventas = get_report(name_queue)
 		else
-			ventas = get_report_by_date(name_queue, filter)
+			ventas = filter_report_for(name_queue, filter)
 		end
 		hash = Hash.new
 		ventas.each do |venta|
