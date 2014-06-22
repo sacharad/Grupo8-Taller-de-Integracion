@@ -1,0 +1,360 @@
+<script type="text/javascript">
+$(function () {
+    $(".nav_btn").on("click", function(e){
+        e.preventDefault();
+        var id = $(this).attr("href");
+        $('body').animate({ scrollTop: $(id).offset().top - 20}, 1000);
+        $(".nav_btn").parent().removeClass("active");
+        $(this).parent().addClass("active");
+    });
+    $(".dashboard_row").each(function(){
+        $(this).height($( window ).height()-50);
+    });
+    $(".chart").each(function(){
+        $(this).height($( window ).height()-50-150);
+    });
+    $("#map_canvas").height($( window ).height()-50-150);
+    /*FIN nav_btns*/
+    var ventas_categories_x = []
+    var ventas_y = []
+    for(i in ventas){
+        ventas_categories_x.push(ventas[i].fecha.substr(5, 9));
+        var acumulado_venta = 0
+        for(j in ventas[i].datos){
+            acumulado_venta += ventas[i].datos[j].precio_venta;
+        }
+        ventas_y.push(acumulado_venta);
+    }
+        $('#sales_chart').highcharts({
+            title: {
+                text: 'Ventas',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'Último Mes',
+                x: -20
+            },
+            xAxis: {
+                categories: ventas_categories_x
+            },
+            yAxis: {
+                title: {
+                    text: '$'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valuePrefix: '$ '
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Ventas',
+                data: ventas_y,
+                color: '#4CC668'
+            }]
+        });
+/*FIN Sales Chart*/
+    var pedidos_categories_x = []
+    var pedidos_y = []
+    for(i in pedidos){
+        pedidos_categories_x.push(pedidos[i].fecha.substr(5, 9));
+        pedidos_y.push(pedidos[i].datos.length);
+    }
+$('#fulfilled_orders_chart').highcharts({
+            title: {
+                text: 'Cantidad de Pedidos',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'Último Mes',
+                x: -20
+            },
+            xAxis: {
+                categories: pedidos_categories_x
+            },
+            yAxis: {
+                title: {
+                    text: 'Cantidad'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ' '
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Pedidos',
+                data: pedidos_y,
+                color: '#4A92E4'
+            }]
+        });
+
+/*FIN Pedidos Realizados*/
+    var pedidos_quebrados_categories_x = []
+    var pedidos_quebrados_y = []
+    for(i in quiebres){
+        pedidos_quebrados_categories_x.push(quiebres[i].fecha.substr(5, 9));
+        pedidos_quebrados_y.push(quiebres[i].datos.length);
+    }
+$('#broken_orders_chart').highcharts({
+            title: {
+                text: 'Cantidad de Pedidos Quebrados',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'Último Mes',
+                x: -20
+            },
+            xAxis: {
+                categories: pedidos_quebrados_categories_x
+            },
+            yAxis: {
+                title: {
+                    text: 'Cantidad'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Quiebres',
+                data: pedidos_quebrados_y,
+                color: '#FF6262'
+            }]
+        });
+/*FIN pedidos quebrados*/
+/*Productos mas vendidos*/
+    var ranking_productos_vendidos_categories_x = []
+    var ranking_productos_vendidos_y = []
+    for(i in ranking_productos_vendidos){
+        ranking_productos_vendidos_categories_x.push(ranking_productos_vendidos[i][0]);
+        ranking_productos_vendidos_y.push(ranking_productos_vendidos[i][1]);
+    }
+ $('#top_sellers_chart').highcharts({
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Ranking 10 Productos Más Vendidos'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: ranking_productos_vendidos_categories_x,
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                minorGridLineWidth: 2,
+                allowDecimals:false,
+                min: 0,
+                title: {
+                    text: 'Cantidad de Ventas',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valuePrefix: 'Sku: '
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Último Mes',
+                data: ranking_productos_vendidos_y,
+                color: "#E48D4A"
+            }]
+        });
+/* FIN productos mas vendidos*/
+/* Productos mas quebrados*/
+    var ranking_productos_quebrados_categories_x = []
+    var ranking_productos_quebrados_y = []
+    for(i in ranking_productos_quebrados){
+        ranking_productos_quebrados_categories_x.push(ranking_productos_quebrados[i][0]);
+        ranking_productos_quebrados_y.push(ranking_productos_quebrados[i][1]);
+    }
+ $('#top_broken_chart').highcharts({
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Ranking 10 Productos Más Quebrados'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: ranking_productos_quebrados_categories_x,
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                minorGridLineWidth: 2,
+                allowDecimals:false,
+                min: 0,
+                title: {
+                    text: 'Cantidad de Quiebres',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valuePrefix: 'Sku: '
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Último Mes',
+                data: ranking_productos_quebrados_y,
+                color: "#4AE4CD"
+            }]
+        });
+/*FIN productos mas quebrados*/
+/* Clientes que mas han comprado*/
+     var ranking_clientes_categories_x = []
+    var ranking_clientes_y = []
+    for(i in ranking_clientes){
+        ranking_clientes_categories_x.push(ranking_clientes[i][0]);
+        ranking_clientes_y.push(ranking_clientes[i][1]);
+    }
+ $('#top_buyers_chart').highcharts({
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Ranking 10 Mejores Clientes'
+            },
+            subtitle: {
+                text: 'Cantidad de Compras'
+            },
+            xAxis: {
+                categories: ranking_clientes_categories_x,
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                minorGridLineWidth: 2,
+                allowDecimals:false,
+                min: 0,
+                title: {
+                    text: '',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valuePrefix: ''
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Último Mes',
+                data: ranking_clientes_y,
+                color: "#DA6BE0"
+            }]
+        });
+/*FIN clientes que mas han comprado*/
+
+    load_order_points(pedidos);
+
+/*FIN Jquery*/
+    });
+    
+
+</script>

@@ -37,17 +37,21 @@ class DashboardController < ApplicationController
     render 'total'
   end
   def year
-    @quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
-    @pedidos = Order.get_collection("InfoPedidos").count.to_f
-    @ventas = Order.get_collection("Reporte_Ventas").count.to_f
-    @pedidos_incorrectos = Order.get_collection("Reporte_OrdenesIncorrectas").count.to_f
+    gon.quiebres = Order.split_report_for("Reporte_QuiebresStock", "month")
+    gon.pedidos = Order.split_report_for("InfoPedidos", "month")
+    gon.ventas = Order.split_report_for("Reporte_Ventas", "month")
+    gon.ranking_productos_quebrados = Order.ranking_products("Reporte_QuiebresStock","year").take(10)
+    gon.ranking_productos_vendidos = Order.ranking_products("Reporte_Ventas","year").take(10)
+    gon.ranking_clientes = Order.ranking_clients("Reporte_Ventas","year").take(10)
     render 'year'
   end
   def month
-    @quiebres = Order.get_collection("Reporte_QuiebresStock").count.to_f
-    @pedidos = Order.get_collection("InfoPedidos").count.to_f
-    @ventas = Order.get_collection("Reporte_Ventas").count.to_f
-    @pedidos_incorrectos = Order.get_collection("Reporte_OrdenesIncorrectas").count.to_f
+    gon.quiebres = Order.split_report_for("Reporte_QuiebresStock", "month_days")
+    gon.pedidos = Order.split_report_for("InfoPedidos", "month_days")
+    gon.ventas = Order.split_report_for("Reporte_Ventas", "month_days")
+    gon.ranking_productos_quebrados = Order.ranking_products("Reporte_QuiebresStock","month").take(10)
+    gon.ranking_productos_vendidos = Order.ranking_products("Reporte_Ventas","month").take(10)
+    gon.ranking_clientes = Order.ranking_clients("Reporte_Ventas","month").take(10)
     render 'month'
   end
   def week
