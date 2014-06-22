@@ -1,19 +1,23 @@
 
 
-<div Class="tit">LOG IN</div>
-<div class="elegant-aero">
+<div class="row">
+  <div class="col-md-4 col-md-offset-2">
+    <h1 style="padding-bottom:0.5em;">Log In</h1>
+    <div class="elegant-aero">
 
-<%= form_tag sessions_path do %>
-  <label>
-    <span><%= label_tag :login, "Username o Email" %></span>
-    <%= text_field_tag :login, params[:login] %>
-  </label>
-</br>
-  <label>
-    <span><%= label_tag :password %></span>
-    <%= password_field_tag :password %>
-  </label>
-  <p class="button">
-  	<%= submit_tag(value="Ingresar") %></p>
-<% end %>
+    <%= form_tag sessions_path , html: {:role => "form"} do %>
+      <div class="form-group">
+        <span><%= label_tag :login, "Usuario" %></span>
+        <%= text_field_tag :login, params[:login] , class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <span><%= label_tag :password %></span>
+        <%= password_field_tag :password, nil , class: 'form-control' %>
+      </div>
+      <p class="button">
+      	<%= submit_tag(value="Ingresar" , class: 'btn btn-default') %>
+      </p>
+    <% end %>
+    </div>
+  </div>
 </div>
