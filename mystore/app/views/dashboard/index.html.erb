@@ -1,14 +1,23 @@
-<h1>Dashboard</h1>
-
-<div class="row">
-	<div class="col-md-4 col-md-offset-2">
-		<div class="btn btn-default btn-large"><a href="<%= dashboard_total_path %>">Total</a></div>
-		<div class="btn btn-default btn-large"><a href="<%= dashboard_year_path %>">Ultimo Año</a></div>
-		<div class="btn btn-default btn-large"><a href="<%= dashboard_month_path %>">Ultimo Mes</a></div>
-		<div class="btn btn-default btn-large"><a href="<%= dashboard_week_path %>">Ultima Semana</a></div>
-</div>
-
-
-</div>
+  <div class="row">
+    <div class="col-md-3 col-md-offset-5 center">
+      <h1 >Dashboard</h1>
+    </div>  
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-md-offset-2">
+      <div class="dashboard_button dark"><a class="no-dec" href="<%= dashboard_total_path %>">Info Histórica</a></div>
+    </div>
+    <div class="col-md-4 col-md-offset-1">
+      <div class="dashboard_button light"><a class="no-dec" href="<%= dashboard_year_path %>">Info Último Año</a></div>
+    </div>  
+  </div>
+  <div class="row" style="padding-top: 3em;">
+    <div class="col-md-4 col-md-offset-2" >
+      <div class="dashboard_button green"><a class="no-dec" href="<%= dashboard_month_path %>">Info Último Mes</a></div>
+    </div>
+    <div class="col-md-4 col-md-offset-1">
+      <div class="dashboard_button blue"><a class="no-dec" href="<%= dashboard_week_path %>">Info Última Semana</a></div>
+    </div>
+  </div>
 
 

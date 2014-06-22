@@ -1,40 +1,78 @@
 <div class="container container-fluid">
-  <div class= "well well-small">
-    <%= link_to "#" do %>
-      <h4>Pedidos totales: <%= @pedidos %></h4>
-    <%end%>
+  <div class= "well well-small center">
+      <h2>Pedidos totales: <%= @pedidos %></h2>
   </div>
-   <table class="table table-hover">
-    <thead>
-      <th><h4>Reporte</h4></th>
-      <th><h4>Cantidad</h4></th>
-      <th><h4>KPI(%)</h4></th>
-      <th><h4>Forma calculo</h4></th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody>
-      <th><h5>Quiebres de Stocks</h5></th>
-      <th><h5><%= @quiebres %></h5></th>
-      <th><h5><%= @quiebres/@pedidos %></h5></th>
-      <th><h5>Quiebre Stock/TotalPedidos</h5></th>
-      <th> <%= link_to 'Details', show_brokestock_path, :class => 'btn btn-info' %> </th>
-    </tbody>
-    <tbody>
-      <th><h5>Ventas efectivas</h5></th>
-      <th><h5><%= @ventas%></h5></th>
-      <th><h5><%= @ventas/@pedidos %></h5></th>   
-      <th><h5>Ventas/TotalPedidos</h5></th>
-      <th> <%= link_to 'Details', show_sales_path, :class => 'btn btn-info' %> </th>
-    </tbody>
-    <tbody>
-      <th><h5>Pedidos incorrectos procesados</h5></th>
-      <th><h5><%= @pedidos_incorrectos%></h5></th>
-      <th><h5><%= @pedidos_incorrectos/@pedidos%></h5></th>   
-      <th><h5>Incorrectos/TotalPedidos</h5></th>
-      <th> <%= link_to 'Details', show_wrongorders_path, :class => 'btn btn-info' %> </th>
-    </tbody>
-  </table> 
+  <div class="row">
+    <div class="col-md-2  center">
+      <h4>Reporte</h4>
+    </div>
+    <div class="col-md-1 center">
+      <h4>Cantidad</h4>
+    </div>
+    <div class="col-md-2 center">
+      <h4>Forma calculo</h4>
+    </div>
+    <div class="col-md-5 center ">
+      <h4>KPI(%)</h4>
+    </div>
+    <div class="col-md-1 center">
+      <h4>Link</h4>
+    </div>
+  </div>
+  <div class="row" style="padding-top: 3em;">
+    <div class="col-md-2  center">
+      <h5>Quiebres de Stocks</h5>
+    </div>
+    <div class="col-md-1 center">
+      <h5><%= @quiebres %></h5>
+    </div>
+    <div class="col-md-2 center">
+      <h5>Quiebre Stock/TotalPedidos</h5>
+    </div>
+    <div class="col-md-5 pie_quebrados" style="height: 80px; margin: 0;">
+    </div>
+    <div class="col-md-1 center">
+      <%= link_to 'Detalles', show_brokestock_path, :class => 'btn btn-info' %>
+    </div>
+  </div>
+  <div class="row" style="padding-top: 3em;">
+    <div class="col-md-2  center">
+      <h5>Ventas efectivas</h5>  </div>
+    <div class="col-md-1 center">
+      <h5><%= @ventas%></h5>  </div>
+    <div class="col-md-2 center">
+      <h5>Ventas/TotalPedidos</h5>
+    </div>
+    <div class="col-md-5 pie_ventas" style="height: 80px; margin: 0;">
+    </div>
+    <div class="col-md-1 center">
+      <%= link_to 'Detalles', show_sales_path, :class => 'btn btn-info' %>
+    </div>
+  </div>
+  <div class="row" style="padding-top: 3em;">
+    <div class="col-md-2  center">
+     <h5>Pedidos incorrectos procesados</h5>
+    </div>
+    <div class="col-md-1 center">
+      <h5><%= @pedidos_incorrectos%></h5>
+    </div>
+    <div class="col-md-2 center">
+      <h5>Incorrectos/TotalPedidos</h5>
+    </div>
+    <div class="col-md-5 pie_wrongorders" style="height: 80px; margin: 0;">
+    </div>
+    <div class="col-md-1 center">
+     <%= link_to 'Detalles', show_wrongorders_path, :class => 'btn btn-info' %>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
 </div>
 
 

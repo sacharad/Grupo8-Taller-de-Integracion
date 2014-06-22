@@ -1,0 +1,115 @@
+<script type="text/javascript">
+$(function () {
+    $('.pie_quebrados').highcharts({
+        chart: {           
+            margin: [0, 0, 0, 0],
+            spacingTop: 0,
+            spacingBottom: 0,
+            spacingLeft: 0,
+            spacingRight: 0
+        },
+        plotOptions: {
+            pie: {
+                size:'100%',
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        title: {
+            text: ''
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        series: [{
+            type: 'pie',
+            name: 'Quiebres de Stock',
+            data: [
+                ['Pedidos Quebrados',   <%= (@quiebres/@pedidos)*100 %>],
+                ['Pedidos Procesados',  <%= 100 - (@quiebres/@pedidos)*100 %>],
+            ]
+        }]
+    });
+$('.pie_ventas').highcharts({
+        chart: {           
+            margin: [0, 0, 0, 0],
+            spacingTop: 0,
+            spacingBottom: 0,
+            spacingLeft: 0,
+            spacingRight: 0
+        },
+        plotOptions: {
+            pie: {
+                size:'100%',
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        title: {
+            text: ''
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        series: [{
+            type: 'pie',
+            name: 'Quiebres de Stock',
+            data: [
+                ['Ventas',   <%= (@ventas/@pedidos)*100 %>],
+                ['Pedidos Totales',  <%= 100 - (@ventas/@pedidos)*100 %>],
+            ]
+        }]
+    });
+$('.pie_wrongorders').highcharts({
+        chart: {           
+            margin: [0, 0, 0, 0],
+            spacingTop: 0,
+            spacingBottom: 0,
+            spacingLeft: 0,
+            spacingRight: 0
+        },
+        plotOptions: {
+            pie: {
+                size:'100%',
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        title: {
+            text: ''
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        series: [{
+            type: 'pie',
+            name: 'Quiebres de Stock',
+            data: [
+                ['Pedidos Incorrectos',   <%= (@pedidos_incorrectos/@pedidos)*100 %>],
+                ['Pedidos Totales',  <%= 100 - (@pedidos_incorrectos/@pedidos)*100 %>],
+            ]
+        }]
+    });
+});
+</script>
