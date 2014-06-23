@@ -65,6 +65,11 @@ class ApiController < ApplicationController
         if password_sha1_recibido != password_sha1_generado
           render :json => [:error => "Contraseña incorrecta."].to_json and return
         end
+      elsif grupo == "grupo5" #sin encriptar
+        password_sha1_generado = password_grupo
+        if password_sha1_recibido != password_sha1_generado
+          render :json => [:error => "Contraseña incorrecta."].to_json and return
+        end
       else
         password_sha1_generado = Digest::SHA1.hexdigest password_grupo
         if password_sha1_recibido != password_sha1_generado
