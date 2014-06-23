@@ -187,6 +187,10 @@ class Connectors::WarehouseConnector
                 unless respuesta.nil? or respuesta["status"] != "200"
                   cantidad_recibida = respuesta["response"]["cantidad"].to_i
                 end
+              elsif a.grupo == "grupo9"
+                unless respuesta.nil?
+                  cantidad_recibida = respuesta["amountSent"].to_i
+                end
               else
                 cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
               end
