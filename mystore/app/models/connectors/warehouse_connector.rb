@@ -120,6 +120,30 @@ class Connectors::WarehouseConnector
                   :cantidad => cantidad_a_pedir
                 }
               }
+              elsif a.grupo == "grupo6"
+              options = {
+                :path => "/apiGrupo/pedido",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :usuario => "grupo8",
+                  :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
+                  :password => a.password_out,
+                  :SKU => sku,
+                  :cantidad => cantidad_a_pedir
+                }
+              }
+              elsif a.grupo == "grupo3"
+              options = {
+                :path => "/apiGrupo/pedido",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :usuario => "grupo8",
+                  :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
+                  :password => a.password_out,
+                  :SKU => sku,
+                  :cantidad => cantidad_a_pedir
+                }
+              }
               else
               options = {
                 :path => "/api/pedirProducto",
@@ -127,7 +151,7 @@ class Connectors::WarehouseConnector
                 :params => {
                   :usuario => "grupo8",
                   :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
-                  :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
+                  :password => (Digest::SHA1.hexdigest(a.password_out)),
                   :SKU => sku,
                   :cantidad => cantidad_a_pedir
                 }
