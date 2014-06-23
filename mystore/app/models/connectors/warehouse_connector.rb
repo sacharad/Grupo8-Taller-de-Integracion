@@ -96,18 +96,6 @@ class Connectors::WarehouseConnector
                   :cantidad => cantidad_a_pedir
                 }
               }
-              elsif a.grupo == "grupo5"
-              options = {
-                :path => "/api/pedirProducto",
-                :warehouse_url => warehouse_url,
-                :params => {
-                  :usuario => "grupo8",
-                  :almacenId => Almacen.buscar("recepcion")["almacen_id"],
-                  :password => a.password_out,
-                  :sku => sku,
-                  :cantidad => cantidad_a_pedir
-                }
-              }
               elsif a.grupo == "grupo2"
               options = {
                 :path => "/api/pedirProducto",
@@ -115,7 +103,7 @@ class Connectors::WarehouseConnector
                 :params => {
                   :usuario => "grupo8",
                   :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
-                  :password => Base64.encode64(Digest::HMAC.digest(a.password_out, ENV["WAREHOUSE_PRIVATE_KEY"], Digest::SHA1)),
+                  :password => a.password_out,
                   :SKU => sku,
                   :cantidad => cantidad_a_pedir
                 }
@@ -134,7 +122,7 @@ class Connectors::WarehouseConnector
               }
               elsif a.grupo == "grupo3"
               options = {
-                :path => "/apiGrupo/pedido",
+                :path => "/api/pedirProducto",
                 :warehouse_url => warehouse_url,
                 :params => {
                   :usuario => "grupo8",
@@ -163,7 +151,7 @@ class Connectors::WarehouseConnector
                 :params => {
                   :usuario => "grupo8",
                   :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
-                  :password => Digest::SHA1.hexdigest(a.password_out),
+                  :password => (Digest::SHA1.hexdigest(a.password_out)),
                   :sku => sku,
                   :cantidad => cantidad_a_pedir
                 }
@@ -175,7 +163,7 @@ class Connectors::WarehouseConnector
                 :params => {
                   :usuario => "grupo8",
                   :almacenId => Almacen.buscar("recepcion")["almacen_id"],
-                  :password => Digest::SHA1.hexdigest(a.password_out),
+                  :password => a.password_out,
                   :sku => sku,
                   :cantidad => cantidad_a_pedir
                 }
@@ -193,7 +181,10 @@ class Connectors::WarehouseConnector
                 }
               }
               end
-              respuesta = get_otra_bodega(options)
+              respuesta = {}
+              respuesta = post_otra_bodega(options)
+              Rails.logger.info "GRUPO: "+ a.grupo
+              Rails.logger.info "RESPUESTA: "+respuesta.to_s
               cantidad_recibida = 0
               if a.grupo == "grupo9"
                 unless respuesta.nil? or respuesta["status"] != "200"
@@ -203,9 +194,24 @@ class Connectors::WarehouseConnector
                 unless respuesta.nil?
                   cantidad_recibida = respuesta["amountSent"].to_i
                 end
+              elsif a.grupo == "grupo6"
+                if !respuesta.nil?
+                  if !!respuesta[0]["cantidad"]
+                    cantidad_recibida = respuesta[0]["cantidad"].to_i
+                  elsif !!respuesta[:cantidad]
+                    cantidad_recibida = respuesta[0][:cantidad].to_i
+                  end
+                end
               else
-                cantidad_recibida = respuesta.nil? ? 0 : respuesta["cantidad"].to_i
+                if !respuesta.nil?
+                  if !!respuesta["cantidad"]
+                    cantidad_recibida = respuesta["cantidad"].to_i
+                  elsif !!respuesta[:cantidad]
+                    cantidad_recibida = respuesta[:cantidad].to_i
+                  end
+                end
               end
+              Rails.logger.info "GRUPOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO "+a.grupo.to_s
               cantidad_acumulada += cantidad_recibida
             rescue => e
             end
@@ -219,7 +225,7 @@ class Connectors::WarehouseConnector
     end
   end
 
-  def get_otra_bodega(options={})
+  def post_otra_bodega(options={})
     Rails.logger.info "Attempting to POST to #{options[:warehouse_url]}#{options[:path]}"
     Rails.logger.info "With Params: #{options[:params]}"
     Rails.logger.info @conn_otra_bodega.to_s
@@ -234,6 +240,21 @@ class Connectors::WarehouseConnector
       return nil
     end
   end
+  def get_otra_bodega(options={})
+      Rails.logger.info "Attempting to GET to #{options[:warehouse_url]}#{options[:path]}"
+      Rails.logger.info "With Params: #{options[:params]}"
+      Rails.logger.info @conn_otra_bodega.to_s
+      response = @conn_otra_bodega.get do |req|                           
+          req.url options[:path]
+          req.params = options[:params] unless options[:params].nil?
+      end
+      if response.status < 300
+        return JSON.parse response.body.to_json 
+      else
+        Rails.logger.info "GET WAREHOUSE PRODUCT FAILED(GET): "+response.body.to_s
+        return nil
+      end
+    end
 
   def vaciar_almacen_recepcion()
     Rails.logger.info "STARTING clearance of almacen de recepcion"
