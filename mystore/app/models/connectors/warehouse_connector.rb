@@ -144,6 +144,30 @@ class Connectors::WarehouseConnector
                   :cantidad => cantidad_a_pedir
                 }
               }
+              elsif a.grupo == "grupo1"
+              options = {
+                :path => "/ecommerce/api/v1/pedirProducto",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :usuario => "grupo8",
+                  :almacenId => Almacen.buscar("recepcion")["almacen_id"],
+                  :password => a.password_out,
+                  :sku => sku,
+                  :cant => cantidad_a_pedir
+                }
+              }
+            elsif a.grupo == "grupo7"
+              options = {
+                :path => "/api/api_request",
+                :warehouse_url => warehouse_url,
+                :params => {
+                  :usuario => "grupo8",
+                  :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
+                  :password => Digest::SHA1.hexdigest(a.password_out),
+                  :sku => sku,
+                  :cantidad => cantidad_a_pedir
+                }
+              }
               else
               options = {
                 :path => "/api/pedirProducto",

@@ -31,7 +31,7 @@ class ApiController < ApplicationController
       autorizacion_grupo = Autorizacion.find_by_grupo(grupo)
       password_grupo = autorizacion_grupo.password_in
       if grupo == "grupo2" #quieren con encriptacion sha1
-        password_sha1_generado = Digest::SHA1.hexdigest password_grupo
+        password_sha1_generado = Digest::SHA1.hexdigest(password_grupo)
         if password_sha1_recibido != password_sha1_generado
           render :json => [:error => "Contraseña incorrecta."].to_json and return
         end
@@ -52,6 +52,11 @@ class ApiController < ApplicationController
         end
       elsif grupo == "grupo3" #quieren sin encriptar
         password_sha1_generado = password_grupo
+        if password_sha1_recibido != password_sha1_generado
+          render :json => [:error => "Contraseña incorrecta."].to_json and return
+        end
+      elsif grupo == "grupo7" #sha1 sin hmac pa los 2 lados
+        password_sha1_generado = Digest::SHA1.hexdigest(password_grupo)
         if password_sha1_recibido != password_sha1_generado
           render :json => [:error => "Contraseña incorrecta."].to_json and return
         end
