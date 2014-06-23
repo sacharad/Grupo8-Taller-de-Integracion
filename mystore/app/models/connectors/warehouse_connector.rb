@@ -92,7 +92,7 @@ class Connectors::WarehouseConnector
                   :usuario => "grupo8",
                   :almacen_id => Almacen.buscar("recepcion")["almacen_id"],
                   :password => (Digest::SHA1.hexdigest(a.password_out)),
-                  :sku => sku,
+                  :SKU => sku,
                   :cantidad => cantidad_a_pedir
                 }
               }
