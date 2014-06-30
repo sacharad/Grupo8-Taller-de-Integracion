@@ -35,11 +35,17 @@ require "bunny"
 	def self.reposicion
 		lista_msj =get_msj("reposicion")
 		list_hash =[]
+		i=0
 		lista_msj.each do |msj|
 			hash = JSON.parse (msj)
 			hash["fecha"] = Time.at(hash["fecha"]/1000)
 			list_hash << hash
 			##Insertar en la base de datos mongo
+			Order.report_reposicion(hash)
+			i=i+1
+		end
+		if i !=0
+			Product.vaciar_almacen_recepcion
 		end
 	end 
 

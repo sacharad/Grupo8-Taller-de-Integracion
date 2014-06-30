@@ -20,7 +20,7 @@ class Linkdropbox < ActiveRecord::Base
 	end
 	#This method convert accdb file to csv
 	def self.import_prices_to_csv
-		 cmd = "java -jar ./public/jars/AccessReader.jar" 
+		 cmd = "java -jar ./AccessReader.jar" 
  			`#{cmd}`
 	end 
 

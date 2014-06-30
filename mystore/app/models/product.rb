@@ -21,8 +21,8 @@ class Product < ActiveRecord::Base
 	end	
 
   def self.loadSpree(file)
-    Spree::Config.set(:products_per_page => 28)
-    self.load(file)
+    Spree::Config.set(:products_per_page => 42)
+    #self.load(file)
     tax_1=Spree::Taxonomy.create(name: "Marca")
     tax_2=Spree::Taxonomy.create(name: "Categoría")
     taxon_1=Spree::Taxon.create(name: "Marca", taxonomy_id: tax_1.id)
@@ -31,20 +31,32 @@ class Product < ActiveRecord::Base
     JSON.parse(archivo).each do |item|
       producto=Spree::Product.create(:name=>item['modelo'],:price=>item['precio']['internet'],:sku=>item['sku'],:description=>item['descripcion'],:shipping_category_id=>1)
       producto.available_on=Time.now
-      t=Spree::Taxon.create(name: item['marca'], parent_id: taxon_1, taxonomy_id: tax_1.id)
-      t.save
+      t=Spree::Taxon.where(name:item['marca'])
+      if t.count==0
+      	t=Spree::Taxon.create(name: item['marca'], parent_id: taxon_1, taxonomy_id: tax_1.id)
+      	t.save
+      end
       producto.taxons<<t
       item['categorias'].each do |categoria|
-        t=Spree::Taxon.create(name: categoria, parent_id: taxon_2, taxonomy_id: tax_2.id)
-        t.save
-        producto.taxons<<t
+        t=Spree::Taxon.where(name:categoria)
+        if t.count==0 
+        	t=Spree::Taxon.create(name: categoria, parent_id: taxon_2, taxonomy_id: tax_2.id)
+       		t.save
+		producto.taxons<<t
+	elsif categoria==item['marca']
+		a=Spree::Taxon.create(name: categoria, parent_id: taxon_2, taxonomy_id: tax_2.id) #tax_2.id
+		a.save
+		producto.taxons<<a
+	else
+		producto.taxons<<t
+	end
       end 
       producto.save
       Spree::Image.create({:attachment => open(URI.parse(item['imagen'])),:viewable => producto.master})
     end
     setear_backorder
-    setear_categoria
   end 
+
 
 #------------------------------Metodos Spree----------------------------------------------------
 
@@ -52,11 +64,11 @@ class Product < ActiveRecord::Base
     i=0
     Spree::Taxon.all.each do |tipo|
       if i>4 
-        if tipo.name!='Marca' or tipo.name!='Categoria' and tipo.taxonomy_id==1 and tipo.parent_id==nil
-          tipo.parent_id=1
+        if tipo.name!='Marca' or tipo.name!='Categoria' and tipo.taxonomy_id==Spree::Taxonomy.first.id and tipo.parent_id==nil
+          tipo.parent_id=Spree::Taxon.first.id
           tipo.save
-        elsif tipo.id!=1 and tipo.id!=2 and tipo.taxonomy_id==2 and tipo.parent_id==nil
-          tipo.parent_id=2
+        elsif tipo.id!=1 and tipo.id!=2 and tipo.taxonomy_id==(Spree::Taxonomy.first.id+1) and tipo.parent_id==nil
+          tipo.parent_id=(Spree::Taxon.first.id+1)
           tipo.save
         end
       end
@@ -76,18 +88,36 @@ class Product < ActiveRecord::Base
     t=Spree::Variant.find_by_sku(sku).product_id
     producto=Spree::Product.find(t)
     descripcion=producto.description
+    if descripcion==""
+	descripcion=" "
+    end
     producto.description=descripcion.split('<h3>')[0]+'<h3>Stock disponible: '+find_stock(sku).to_s+'</h3>'
     producto.save
   end
 
-  #aActualiza stock Spree para todos los productos
-  def self.asignar_stock
+  #Actualiza stock Spree para todos los productos
+  def self.asignar_stocks
     Spree::Variant.all.each do |producto|
       stock=Spree::StockItem.find_by_variant_id(producto.id)
       cantidad=OrdersManager.actualizarDisponibilidad(producto.sku)[:stock]
       Spree::StockMovement.create(stock_item_id:stock.id,quantity:-stock.count_on_hand)
       Spree::StockMovement.create(stock_item_id:stock.id,quantity:cantidad)
       actualizar_stock_producto(producto.sku)
+    end
+  end
+ 
+ #Actualiza stock a partir de un determinado producto 
+ def self.asignar_desde(id)
+    i=1
+    Spree::Variant.all.each do |producto|
+      if i>=id
+     	 stock=Spree::StockItem.find_by_variant_id(producto.id)
+     	 cantidad=OrdersManager.actualizarDisponibilidad(producto.sku)[:stock]
+     	 Spree::StockMovement.create(stock_item_id:stock.id,quantity:-stock.count_on_hand)
+     	 Spree::StockMovement.create(stock_item_id:stock.id,quantity:cantidad)
+     	 actualizar_stock_producto(producto.sku)
+      end
+      i=i+1	
     end
   end
 
@@ -123,6 +153,7 @@ end
 
   #Metodo que revisa las promociones y actualiza los precios
   def self.actualizar_precios
+    Rails.logger.info "Precio actualizado" 
     Oferta.all.each do |promo|
       if promo.iniciado==true and promo.terminado==false and promo.due_date<DateTime.now then
         promo.terminado=true
@@ -142,8 +173,12 @@ end
         if Spree::Variant.find_by_sku(promo.sku)!=nil
           change_price(promo.sku,promo.price)
           promo.save
+          product_id=Spree::Variant.find_by_sku(promo.sku).product_id
           producto=Spree::Product.find(product_id)
-          mensaje="Disfruta la promoción "+producto.name+ " a $"+promo.price.to_s
+          mensaje="#ofertagrupo8 Disfruta la promoción "+producto.name+ " a $"+promo.price.to_s
+          if mensaje.length>140
+	  	mensaje="#ofertagrupo8 Disfruta la promoción "+producto.name[0..29]+ " a $"+promo.price.to_s
+          end
           Connectors::TwitterConnector.enviarMensaje(mensaje)
         end
       end

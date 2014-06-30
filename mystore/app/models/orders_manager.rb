@@ -51,9 +51,13 @@ class OrdersManager < ActiveRecord::Base
 					"hora" => pedido["hora"],
 					"rut" => pedido["rut"]
 				}
-
-				info_pedido["fecha"] = tipo == "FTP" ? pedido["fecha"][1] : pedido["fecha"]
-
+				Rails.logger.info "PEDIDO COMPLETO ===> " + pedido.to_s
+				begin
+					info_pedido["fecha"] = tipo == "FTP" ? pedido["fecha"][1] : pedido["fecha"]
+				rescue
+					info_pedido["fecha"] = ""
+				end
+				
 				ejecutar = true
 
 				if tipo == "FTP"

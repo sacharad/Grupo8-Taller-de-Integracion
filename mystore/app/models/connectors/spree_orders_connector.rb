@@ -10,7 +10,7 @@ class Connectors::SpreeOrdersConnector < ActiveRecord::Base
 
 		if !orders.nil?
 			orders.each	do |f|
-				if (!OrdersSpree.exists?(:name => f.number))
+				if (!OrdersSpree.exists?(:name => f.number) and f.ship_address_id!=nil)
 					rut = "web"
 					fecha = DateTime.now.to_date
 					hora = Time.now.strftime("%I:%M:%S %z")
